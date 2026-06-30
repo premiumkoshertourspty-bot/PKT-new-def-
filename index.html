@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B1730">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PKT CRM">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="logo.jpg">
+<title>Premium Kosher Tours CRM</title>
+<style>
+:root{--navy:#0B1730;--navy2:#182A52;--gold:#C8A84B;--gold2:#E2C96B;--bg:#F4F6FB;--text:#172033;--muted:#64748B;--line:#E2E8F0;--header-h:90px;--nav-h:52px}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text);height:100%;-webkit-overflow-scrolling:touch;overflow-y:auto}
+header{position:fixed;top:0;left:0;right:0;z-index:20;background:linear-gradient(135deg,#071126,var(--navy2));color:white;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+header img{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+header h1{margin:0;color:var(--gold2);font-size:17px;letter-spacing:.08em;text-transform:uppercase}
+header p{margin:4px 0 0;color:rgba(255,255,255,.7);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+nav{position:fixed;top:calc(var(--header-h) + env(safe-area-inset-top));left:0;right:0;z-index:19;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;background:white;padding:8px 10px;border-bottom:1px solid var(--line)}
+nav::-webkit-scrollbar{display:none}
+nav button{white-space:nowrap;border:1px solid #D8BF6A;background:white;color:var(--navy);font-weight:700;border-radius:999px;padding:9px 14px;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:rgba(200,168,75,.3);cursor:pointer}
+nav button.active{background:var(--navy);color:var(--gold2)}
+main{padding:16px;padding-top:calc(var(--header-h) + var(--nav-h) + env(safe-area-inset-top) + 16px);max-width:1120px;margin:auto}.screen{display:none}.screen.active{display:block}
+@media(max-width:760px){.row,.three,.cards,.six,.four{grid-template-columns:1fr}.item-card{display:block}.actions{justify-content:flex-start;margin-top:10px}.act-row-top,.tr-row-top{grid-template-columns:1fr 1fr}}
+.panel{background:white;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 8px 26px rgba(15,23,42,.08)}
+h2{margin:0 0 4px;color:var(--navy);font-size:26px}h3{margin:0 0 12px;color:var(--navy)}.muted{color:var(--muted);line-height:1.45;font-size:14px}
+label{display:block;margin:12px 0 5px;text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:800;color:#A77F25}
+input,select,textarea{width:100%;padding:12px;border:1px solid #CBD5E1;border-radius:10px;font-size:16px;background:white}textarea{min-height:86px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+button{font-family:inherit;cursor:pointer}.gold{background:linear-gradient(135deg,var(--gold),var(--gold2));border:0;color:var(--navy);font-weight:800;border-radius:10px;padding:12px 15px;margin-top:12px}.secondary{background:#EEF2F7;border:1px solid #CBD5E1;color:#334155;font-weight:700;border-radius:10px;padding:11px 14px;margin-top:12px}.danger{background:#FEE2E2;border:1px solid #FECACA;color:#991B1B;font-weight:700;border-radius:10px;padding:9px 12px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.kpi{background:white;border-top:5px solid var(--gold);border-radius:14px;padding:18px;box-shadow:0 8px 26px rgba(15,23,42,.08)}.kpi b{font-size:28px;color:var(--navy);display:block}.kpi span{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+.item-card{border:1px solid var(--line);border-left:5px solid var(--gold);border-radius:12px;padding:13px;margin:10px 0;background:white;display:flex;gap:14px;justify-content:space-between;align-items:center}.item-card b{color:var(--navy)}.item-card small{display:block;color:var(--muted);margin-top:4px;line-height:1.35}.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.actions button{padding:8px 10px;border-radius:9px;border:1px solid #CBD5E1;background:#F8FAFC}
+.day{background:white;border-radius:14px;margin:14px 0;overflow:hidden;box-shadow:0 8px 26px rgba(15,23,42,.08)}.day-head{background:var(--navy);border-bottom:5px solid var(--gold);padding:14px;color:white;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}.day-head input{background:rgba(255,255,255,.08);color:white;border-color:rgba(226,201,107,.45)}
+.day-body{padding:14px}
+.line-section{margin:14px 0}.line-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:6px;border-bottom:1px solid var(--line);padding-bottom:4px}
+.col-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#A77F25;margin-bottom:3px}
+.act-row{background:#F8FAFC;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0}
+.act-row-top{display:grid;grid-template-columns:1.8fr 90px 110px 110px auto;gap:8px;align-items:end}
+.act-row-bottom{margin-top:8px}.act-row-bottom input,.tr-row-bottom input{font-size:13px;padding:8px 10px;background:white;width:100%;border:1px solid #CBD5E1;border-radius:10px}
+.act-row-top input[readonly]{background:#EEF2F7;color:var(--muted);font-size:13px;padding:8px 10px}
+.act-row-top input[type=number]{font-size:14px;padding:8px 10px}.act-row-top select{font-size:14px;padding:8px 10px}
+.item-desc-hint{font-size:11px;color:var(--muted);margin-top:3px;min-height:14px;font-style:italic}
+.line-total-chip{background:var(--navy);color:var(--gold2);font-weight:800;border-radius:8px;padding:9px 10px;font-size:13px;text-align:right;min-width:90px;display:flex;align-items:center;justify-content:flex-end}
+.tr-row{background:#F0F4FF;border:1px solid #CBD5E1;border-radius:10px;padding:10px 12px;margin:6px 0}
+.tr-row-top{display:grid;grid-template-columns:1.6fr 80px 110px 80px 110px auto;gap:8px;align-items:end}
+.tr-row-bottom{margin-top:8px}.tr-row-top input[readonly]{background:#E8EDF8;color:var(--muted);font-size:13px;padding:8px 10px}
+.tr-row-top input[type=number]{font-size:14px;padding:8px 10px}.tr-row-top select{font-size:14px;padding:8px 10px}
+.totals{background:var(--navy);color:white;border-radius:12px;padding:14px;margin-top:12px}.totals div{display:flex;justify-content:space-between;padding:5px 0}.totals b{color:var(--gold2)}
+.toast{position:fixed;left:16px;right:16px;bottom:16px;background:var(--navy);color:white;padding:14px;border-left:5px solid var(--gold);border-radius:12px;z-index:50;text-align:center}
+/* Expense styles */
+.exp-card{border:1px solid var(--line);border-left:5px solid #E53E3E;border-radius:12px;padding:13px;margin:8px 0;background:white;display:flex;gap:14px;justify-content:space-between;align-items:center}
+.exp-card b{color:#991B1B}.exp-card small{display:block;color:var(--muted);margin-top:3px;line-height:1.35}
+.exp-badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;background:#FEE2E2;color:#991B1B}
+.inv-badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;background:#DBEAFE;color:#1E3A8A}
+.pnl-table{width:100%;border-collapse:collapse;margin-top:10px}
+.pnl-table th{text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line)}
+.pnl-table td{padding:8px;border-bottom:1px solid var(--line);font-size:13px}
+.pnl-table tr:last-child td{border-bottom:none}
+.net-positive{color:#166534;font-weight:800}.net-negative{color:#991B1B;font-weight:800}
+.kpi-red{background:white;border-top:5px solid #E53E3E;border-radius:14px;padding:18px;box-shadow:0 8px 26px rgba(15,23,42,.08)}
+.kpi-red b{font-size:28px;color:#991B1B;display:block}.kpi-red span{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+.kpi-green{background:white;border-top:5px solid #16A34A;border-radius:14px;padding:18px;box-shadow:0 8px 26px rgba(15,23,42,.08)}
+.kpi-green b{font-size:28px;color:#166534;display:block}.kpi-green span{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.six{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+
+/* print preview placeholder — actual printing done via new window */
+#printScreen{display:none}
+/* Invoice modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(7,17,38,.72);z-index:100;overflow-y:auto;padding:20px}
+.modal-overlay.open{display:flex;align-items:flex-start;justify-content:center}
+.modal{background:white;border-radius:16px;width:100%;max-width:640px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.3);margin:auto}
+.modal-head{background:linear-gradient(135deg,#071126,var(--navy2));padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{color:var(--gold2);margin:0;font-size:17px;letter-spacing:.06em;text-transform:uppercase}
+.modal-head button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:white;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer}
+.modal-body{padding:20px}
+.modal-section{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.modal-section:last-child{border-bottom:none;margin-bottom:0}
+.modal-section h4{color:var(--navy);font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;margin:0 0 10px}
+.inv-line{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;border-bottom:1px solid #F1F5F9}
+.inv-line:last-child{border-bottom:none}
+.inv-line span{color:var(--muted);font-size:12px}
+.inv-line b{color:var(--navy)}
+.inv-total-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px}
+.inv-grand{background:var(--navy);color:white;border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;margin-top:8px}
+.inv-grand b{color:var(--gold2);font-size:16px}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap;padding:16px 20px;background:#F8FAFC;border-top:1px solid var(--line)}
+.modal-actions button{flex:1;min-width:130px}
+</style>
+</head>
+<body>
+<header><img src="logo.jpg"><div><h1>Premium Kosher Tours</h1><p>CRM v4 · Expense Registry · Client P&amp;L</p></div></header>
+<nav>
+<button class="tab active" data-screen="dashboard">Dashboard</button><button class="tab" data-screen="clients">Clients</button><button class="tab" data-screen="quotes">Quotes</button><button class="tab" data-screen="builder">Builder</button><button class="tab" data-screen="invoices">Invoices</button><button class="tab" data-screen="expenses">Expenses</button><button class="tab" data-screen="backup">Backup</button>
+</nav>
+<main>
+<section id="dashboard" class="screen active">
+  <div class="panel"><h2>Dashboard</h2><p class="muted">PKT CRM v4 · Invoices numbered INV-001… · Expenses numbered EXP-001… · All expenses offset against client invoices for net P&L.</p></div>
+  <div class="six">
+    <div class="kpi"><b id="kClients">0</b><span>Clients</span></div>
+    <div class="kpi"><b id="kQuotes">0</b><span>Quotes</span></div>
+    <div class="kpi"><b id="kInvoices">0</b><span>Invoices</span></div>
+    <div class="kpi"><b id="kDue">$0</b><span>Balance Due</span></div>
+    <div class="kpi-red"><b id="kExpenses">$0</b><span>Total Expenses</span></div>
+    <div class="kpi-green"><b id="kProfit">$0</b><span>Net Profit</span></div>
+  </div>
+  <div class="panel" style="margin-top:14px"><h3>Client P&amp;L Overview</h3><div id="pnlTable"></div></div>
+  <div class="panel"><h3>Recent Quotes</h3><div id="recentQuotes"></div></div>
+</section>
+<section id="clients" class="screen"><div class="panel"><h2>Clients</h2><input type="hidden" id="clientId"><div class="row"><div><label>First Name</label><input id="firstName"></div><div><label>Last Name</label><input id="lastName"></div></div><div class="row"><div><label>Phone</label><input id="phone"></div><div><label>Email</label><input id="email"></div></div><label>Notes</label><textarea id="clientNotes"></textarea><button class="gold" onclick="saveClient()">Save Client</button><button class="secondary" onclick="clearClient()">Clear</button></div><div class="panel"><h3>Client List</h3><input id="clientSearch" placeholder="Search..." oninput="renderClients()"><div id="clientList"></div></div></section>
+<section id="quotes" class="screen"><div class="panel"><h2>Quotes / Trips</h2><input type="hidden" id="quoteId"><label>Client</label><select id="quoteClient"></select><label>Quote / Trip Name</label><input id="quoteName" placeholder="Teigman Personalized Program"><div class="row"><div><label>Arrival</label><input type="date" id="arrivalDate"></div><div><label>Departure</label><input type="date" id="departureDate"></div></div><label>Hotel</label><select id="hotel"></select><div class="three"><div><label>Pax</label><input type="number" id="pax" min="1" value="2"></div><div><label>Status</label><select id="status"><option>Quote</option><option>Accepted</option><option>Confirmed</option><option>Completed</option><option>Cancelled</option></select></div><div><label>Invoice #</label><input id="invoiceNo" placeholder="#29"></div></div><label>Program Subtitle</label><input id="subtitle" value="PANAMA CITY & SURROUNDINGS"><label>Opening Text</label><textarea id="quoteNotes">Experience the best of Panama — from engineering marvels and Jewish heritage to rainforest adventures, history, and culture. Crafted exclusively for you.</textarea><button class="gold" onclick="saveQuote()">Save Quote</button><button class="secondary" onclick="clearQuote()">Clear</button></div><div class="panel"><h3>Quote List</h3><div id="quoteList"></div></div></section>
+<section id="builder" class="screen"><div class="panel"><h2>Quote Builder</h2><label>Select Quote</label><select id="builderQuote" onchange="loadQuoteDays()"></select><button class="secondary" onclick="addDay()">+ Add Day</button><button class="gold" onclick="saveItinerary()">Save Quote</button><button class="gold" onclick="printProposal()">Generate PDF</button><button class="gold" onclick="openInvoiceModalFromBuilder()">→ Convert to Invoice</button><div id="builderTotals" class="totals"></div></div><div id="days"></div></section>
+<section id="invoices" class="screen">
+  <div class="panel">
+    <h2>Invoices</h2>
+    <p class="muted">Invoices are numbered INV-001, INV-002… Expenses numbered EXP-001… Balance Due = Invoice Total − Amount Paid. Net = Invoiced − Expenses for that client.</p>
+    <label>Select Invoice</label><select id="invoiceSelect" onchange="loadInvoice()"></select>
+    <div class="row"><div><label>Invoice #</label><input id="invoiceEditNo" placeholder="INV-001"></div><div><label>Status</label><select id="invoiceStatus"><option>Draft</option><option>Sent</option><option>Partially Paid</option><option>Paid</option><option>Cancelled</option></select></div></div>
+    <div class="row"><div><label>Due Date</label><input type="date" id="invoiceDue"></div><div><label>Amount Paid (USD)</label><input type="number" id="invoicePaid" value="0"></div></div>
+    <label>Payment Instructions</label>
+    <textarea id="invoiceInstructions">Payment may be completed by bank transfer, credit card link, or another method agreed with Premium Kosher Tours.</textarea>
+    <button class="gold" onclick="saveInvoice()">Save Invoice</button>
+    <button class="gold" onclick="printInvoiceSelected()">Generate Invoice PDF</button>
+  </div>
+  <div class="panel"><h3>Invoice List</h3><div id="invoiceList"></div></div>
+  <div class="panel"><h3>Client P&amp;L — Invoiced vs Expenses</h3><div id="clientPnl"></div></div>
+</section>
+<section id="expenses" class="screen">
+  <div class="panel">
+    <h2>Expenses</h2>
+    <p class="muted">All expenses are numbered EXP-001, EXP-002… and offset against the selected client's invoices to calculate net profit per client.</p>
+    <input type="hidden" id="expId">
+    <div class="row">
+      <div><label>Expense # (auto)</label><input id="expNo" placeholder="EXP-001" readonly style="background:#EEF2F7;color:var(--muted)"></div>
+      <div><label>Date</label><input type="date" id="expDate"></div>
+    </div>
+    <label>Client (leave blank for general company expense)</label>
+    <select id="expClient"></select>
+    <div class="row">
+      <div><label>Category</label>
+        <select id="expCategory">
+          <option>Transport / Driver</option>
+          <option>Tour Tickets / Entrance</option>
+          <option>Guide Fee</option>
+          <option>Meals / Food</option>
+          <option>Hotel / Accommodation</option>
+          <option>Flights / Transfers</option>
+          <option>Marketing</option>
+          <option>Office / Admin</option>
+          <option>Communication</option>
+          <option>Banking / Fees</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div><label>Amount (USD)</label><input type="number" id="expAmount" placeholder="0.00" min="0" step="0.01"></div>
+    </div>
+    <label>Vendor / Paid To</label><input id="expVendor" placeholder="Driver David, Gamboa Lodge, etc.">
+    <label>Description / Notes</label><textarea id="expNotes" placeholder="What was this expense for?"></textarea>
+    <div class="row">
+      <div><label>Payment Method</label>
+        <select id="expMethod">
+          <option>Cash</option>
+          <option>Bank Transfer</option>
+          <option>Credit Card</option>
+          <option>Zelle / Wire</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div><label>Linked Invoice (optional)</label><select id="expInvoice"></select></div>
+    </div>
+    <button class="gold" onclick="saveExpense()">Save Expense</button>
+    <button class="secondary" onclick="clearExpense()">Clear</button>
+  </div>
+  <div class="panel">
+    <h3>Expense List</h3>
+    <div class="row" style="margin-bottom:10px">
+      <div><label>Filter by Client</label><select id="expFilterClient" onchange="renderExpenses()"></select></div>
+      <div><label>Filter by Category</label><select id="expFilterCat" onchange="renderExpenses()"><option value="">All Categories</option><option>Transport / Driver</option><option>Tour Tickets / Entrance</option><option>Guide Fee</option><option>Meals / Food</option><option>Hotel / Accommodation</option><option>Flights / Transfers</option><option>Marketing</option><option>Office / Admin</option><option>Communication</option><option>Banking / Fees</option><option>Other</option></select></div>
+    </div>
+    <div id="expenseList"></div>
+    <div id="expenseTotals" class="totals" style="margin-top:10px"></div>
+  </div>
+</section>
+<section id="backup" class="screen">
+  <div class="panel"><h2>Backup / Restore</h2><p class="muted">Export includes clients, quotes, invoices, and expenses. Restore replaces all data — save backups in iCloud Drive or Files.</p>
+    <button class="gold" onclick="exportBackup()">Export Backup File</button>
+    <label>Restore Backup</label><input type="file" accept=".json" onchange="importBackup(event)">
+  </div>
+</section>
+<!-- Invoice Modal -->
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Convert Quote to Invoice</h3>
+      <button onclick="closeInvoiceModal()">✕ Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h4>Client &amp; Trip</h4>
+        <div class="inv-line"><span>Client</span><b id="mClient">—</b></div>
+        <div class="inv-line"><span>Trip</span><b id="mTrip">—</b></div>
+        <div class="inv-line"><span>Hotel</span><b id="mHotel">—</b></div>
+        <div class="inv-line"><span>Dates</span><b id="mDates">—</b></div>
+        <div class="inv-line"><span>Pax</span><b id="mPax">—</b></div>
+      </div>
+      <div class="modal-section">
+        <h4>Line Items</h4>
+        <div id="mLineItems"></div>
+      </div>
+      <div class="modal-section">
+        <h4>Totals</h4>
+        <div id="mTotals"></div>
+      </div>
+      <div class="modal-section">
+        <h4>Invoice Settings</h4>
+        <div class="row">
+          <div><label>Invoice #</label><input id="mInvNo" placeholder="INV-001"></div>
+          <div><label>Due Date</label><input type="date" id="mDueDate"></div>
+        </div>
+        <div class="row">
+          <div><label>Status</label>
+            <select id="mStatus">
+              <option>Draft</option><option>Sent</option><option>Partially Paid</option><option>Paid</option>
+            </select>
+          </div>
+          <div><label>Amount Paid (USD)</label><input type="number" id="mPaid" value="0" min="0" step="0.01"></div>
+        </div>
+        <label>Payment Instructions</label>
+        <textarea id="mInstructions">Payment may be completed by bank transfer, credit card link, or another method agreed with Premium Kosher Tours. Total due within 10 days of invoice.</textarea>
+        <div id="mBalanceRow" class="inv-grand" style="margin-top:12px">
+          <span style="color:rgba(255,255,255,.7)">Balance Due</span>
+          <b id="mBalance">$0.00</b>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="gold" onclick="confirmInvoice()">✔ Save Invoice</button>
+      <button class="gold" onclick="confirmAndPrintInvoice()">🖨 Save &amp; Print PDF</button>
+      <button class="secondary" onclick="closeInvoiceModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+<section id="printScreen" class="screen"></section>
+</main>
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{})}
+const HOTELS=['JW Marriott','Hilton Balboa Avenue','Sortis','Bristol','Plaza Paitilla Inn','Waldorf Astoria'];
+const ITEMS=[
+// ── GUIDE / SERVICE FEES (fixed per booking) ──
+{id:1,name:'Bilingual Tour Guide',category:'Guide / Service',price:145,type:'fixed',
+desc:'Professional bilingual guide service — separate from driver.'},
+{id:2,name:'Driver-Guide Combined',category:'Guide / Service',price:160,type:'fixed',
+desc:'Combined driver and guide service for full-day city tours.'},
+{id:3,name:'Host / Coordinator',category:'Guide / Service',price:40,type:'fixed',
+desc:'Host or coordinator support for airport, activities, meals, and logistics.'},
+// ── TOURS — PER PERSON ──
+{id:4,name:'Monkey Island — Lake Gatún',category:'Tour',price:50,type:'per person',
+desc:'Board a boat on Lake Gatún to visit Monkey Island, where you\'ll encounter capuchin, howler, and Geoffrey\'s spider monkeys living freely in their natural habitat — not a zoo, but true wild Panama. Includes boat tour (1.5–2 hrs) and professional guide.'},
+{id:5,name:'Panama Canal — Miraflores Locks',category:'Tour',price:30,type:'per person',
+desc:'Watch massive vessels transit the Panama Canal live at Miraflores Locks, one of the greatest engineering feats of the modern world. Enjoy a breathtaking IMAX 3D film on the Canal\'s history. Includes IMAX & Miraflores Locks entrance and professional bilingual guide.'},
+{id:6,name:'Gamboa Zipline (Tree Trek)',category:'Tour',price:70,type:'per person',
+desc:'Soar through the jungle canopy on zip lines, cross suspension bridges, and climb platforms through towering trees — surrounded by Panama\'s incredible biodiversity. Includes Tree Trek & Zipline entrance, safety equipment, and professional bilingual guide.'},
+{id:7,name:'Emberá Indigenous Village',category:'Tour',price:55,type:'per person',
+desc:'Journey deep into the Panamanian rainforest for a full cultural immersion with the Emberá indigenous community on the Chagres River. Ride a traditional dugout canoe through the jungle, visit a stunning waterfall, witness traditional dances, learn about ancestral crafts, and share a home-cooked meal with the community. Includes dugout canoe ride, waterfall visit, bilingual guide, and lunch at the village.'},
+{id:8,name:'ATV Rental — Blue Hill Cabins',category:'Tour',price:65,type:'per person',
+desc:'Hit the trails at Blue Hill Cabins for an exhilarating ATV adventure through Panama\'s highlands. Lush forests, ridge trails, panoramic views, and rugged terrain — guided for all skill levels. Navigate mud flats, river crossings, and dramatic elevation changes. Includes ATV rental, safety gear, professional trail guide, and river experience.'},
+{id:9,name:'ATV Rental — El Valle de Antón',category:'Tour',price:120,type:'per person',
+desc:'Guided ATV adventure through the scenic El Valle de Antón crater region — lush mountain landscapes, waterfalls, and diverse wildlife.'},
+{id:10,name:'Jewish Tour — 4 Synagogues',category:'Tour',price:90,type:'per person',
+desc:'Discover the spiritual heart of Jewish Panama through visits to its four main synagogues: Beth El (Ashkenazi), Ahavat Sion, Shevet Achim, and Bet Max ve Sarah (all Sephardic). Each synagogue tells a unique story of immigration, tradition, and community. Includes specialized Jewish history guide and round-trip hotel transport.'},
+{id:11,name:'Casco Viejo Tour',category:'Tour',price:10,type:'per person',
+desc:'Explore Casco Viejo — Panama\'s UNESCO World Heritage colonial district. Stroll through cobblestone streets, admire 18th-century architecture, visit historic plazas, and soak in the vibrant atmosphere of Panama\'s most charming neighborhood. Includes professional guided tour and round-trip hotel transport.'},
+{id:12,name:'Panamá Viejo Ruins & Museum',category:'Tour',price:30,type:'per person',
+desc:'Step back 500 years to the ruins of Panamá Viejo (1519), the first European city on the Pacific coast of the Americas. Explore the tower, cathedral ruins, and museum tracing the city\'s dramatic history — including its legendary destruction by pirate Henry Morgan in 1671. Includes round-trip hotel transport, entrance, and professional guide.'},
+{id:13,name:'Cerro Ancón Hike',category:'Tour',price:15,type:'per person',
+desc:'Hike to the highest point in Panama City for breathtaking panoramic views of the skyline, the Canal, and the Pacific Ocean. Cerro Ancón is also home to wildlife including sloths and toucans. Includes round-trip hotel transport and professional guide.'},
+{id:14,name:'Amador Causeway',category:'Tour',price:10,type:'per person',
+desc:'Walk or bike along the iconic Amador Causeway, a scenic road connecting three small islands at the Pacific entrance of the Canal. Enjoy stunning views of the Panama City skyline, the Bridge of the Americas, and ships waiting to transit the Canal. Includes round-trip hotel transport and professional guide.'},
+{id:15,name:'Paddleboard Session',category:'Tour',price:65,type:'per person',
+desc:'Guided Pacific Ocean paddleboard experience along the Panama City coastline — a fun and scenic way to explore the bay and enjoy the Pacific waters.'},
+{id:16,name:'Military Tour — Half Day',category:'Tour',price:60,type:'per person',
+desc:'Half-day military history tour of Panama — visiting Ancon Hill, Fort Grant, the Amador Causeway, and the Cinta Costera. Discover the WWII coastal artillery batteries, radar stations, and military bases built to defend the Canal. Includes professional bilingual guide and hotel transport.'},
+{id:17,name:'Military Tour — Full Day',category:'Tour',price:80,type:'per person',
+desc:'Full-day military history tour of Panama — visiting all key WWII strategic sites. Panoramic views of the Bay of Panama reveal the country\'s extraordinary strategic importance. Includes professional bilingual guide and hotel transport.'},
+{id:18,name:'San Blas Islands Access',category:'Tour',price:160,type:'per person',
+desc:'Escape to the stunning San Blas archipelago — 365 islands of white sand, crystal-clear turquoise water, and the vibrant Guna Yala indigenous culture. A bucket-list destination unlike anywhere else in the world. Includes full-day round-trip transport, island access tickets, food, and professional guide.'},
+{id:19,name:'Deep Sea Fishing — Pearl Islands',category:'Tour',price:340,type:'per person',
+desc:'Set sail for the legendary Pearl Islands for a thrilling deep-sea fishing adventure — known for marlin, tuna, mahi-mahi, and wahoo. Includes boat charter, fishing equipment & bait, professional fishing captain & crew, and BBQ lunch on the islands.'},
+{id:20,name:'Chapera Beach Access + BBQ',category:'Tour',price:125,type:'per person',
+desc:'Relax on the pristine white sands of Chapera Beach — crystal-clear turquoise water, swaying palms, and total tranquility. Includes beach access at Chapera Island, BBQ, and free time for swimming & relaxation.'},
+{id:21,name:'Ferry Contadora — Round Trip',category:'Tour',price:155,type:'per person',
+desc:'Escape for the day to Contadora Island — one of the Pearl Islands of Panama, renowned for pristine white-sand beaches and crystal-clear waters. Includes round-trip ferry tickets and transport to port.'},
+{id:22,name:'Contadora Plane Tickets — Round Trip',category:'Tour',price:160,type:'per person',
+desc:'Round-trip 20-minute scenic flight to Contadora Island from Albrook Airport.'},
+{id:23,name:'4 Elements Hotel Day Use — Contadora',category:'Tour',price:300,type:'fixed',
+desc:'Full day use of 4 Elements Hotel & private beach on Contadora Island (fixed per booking, not per person).'},
+{id:24,name:'Private Charter Boat — Contadora',category:'Tour',price:2000,type:'fixed',
+desc:'The ultimate island experience: private charter boat to Contadora Island. Pristine white-sand beaches, crystal-clear waters, and spectacular marine life. Includes private charter, BBQ on the island, host and chef.'},
+{id:25,name:'Shaare Jesed Visit',category:'Tour',price:0,type:'fixed',
+desc:'Guided visit to Shaare Jesed — one of Panama\'s most beloved Jewish charitable organizations. They prepare Shabbat meals for families in need, operate a Gemach (free lending center), and provide event halls and hotel rooms to families in hardship. Includes round-trip hotel transport and community representative host.'},
+{id:26,name:'Super Kosher Market Visit',category:'Tour',price:0,type:'fixed',
+desc:'Guided walk through Super Kosher, Panama\'s premier kosher market in the heart of Paitilla. Browse kosher products, local specialties, and imported goods from around the world. Includes free time for shopping.'},
+// ── SHABBAT ──
+{id:27,name:'Shabbat — Community & Synagogue',category:'Shabbat',price:0,type:'fixed',
+desc:'Observe the sacred day of rest in Panama City. Join the local Jewish community for Shabbat services at one of Panama\'s beautiful synagogues. Includes synagogue services, Shabbat dinner (Friday night), Shabbat lunch (Saturday), and full day of rest and community.'},
+// ── MEALS ──
+{id:28,name:'Lunch',category:'Meal',price:35,type:'per person',
+desc:'Kosher lunch — client choice from certified restaurant list.'},
+{id:29,name:'Lunch + Dinner',category:'Meal',price:65,type:'per person',
+desc:'Kosher lunch and dinner package — client choice from certified restaurant list.'},
+{id:30,name:'Welcome / Group Dinner',category:'Meal',price:35,type:'per person',
+desc:'Kosher welcome or group dinner — perfect way to kick off the trip together.'},
+{id:31,name:'San Blas Food Package',category:'Meal',price:35,type:'per person',
+desc:'Food package for San Blas excursion — included in island experience.'},
+{id:32,name:'BBQ Package',category:'Meal',price:35,type:'per person',
+desc:'Kosher BBQ package — for island or outdoor excursions.'},
+];
+const TRANSPORT=[
+['Airport Transfer',60,100,145,195,280],['Half-Day Transport',80,130,165,350,620],['Full-Day Transport',120,220,290,455,750],
+['Monkey Island',100,150,200,230,270],['Panama Canal',100,150,200,230,270],['Embera',110,150,230,250,300],
+['Amador Pier',60,80,110,180,300],['Venas Azules',150,250,320,420,500],['Valle de Anton',150,300,350,420,500],['Canal y Monkey',150,240,0,420,500]
+].map(r=>({name:r[0],p2:r[1],p6:r[2],p9:r[3],p14:r[4],p30:r[5]}));
+const TAX=.07;
+let db=loadDB(), currentDays=[];
+function loadDB(){
+  const raw=localStorage.getItem('pkt_crm_v4')||localStorage.getItem('pkt_crm_v3')||localStorage.getItem('pkt_clean_v1');
+  if(raw){try{const d=JSON.parse(raw);return{clients:d.clients||[],quotes:d.quotes||[],invoices:d.invoices||[],expenses:d.expenses||[]}}catch(e){}}
+  return{clients:[],quotes:[],invoices:[],expenses:[]};
+}
+function saveDB(){localStorage.setItem('pkt_crm_v4',JSON.stringify(db));renderAll()}
+function forceCleanPrices(){/* items & transport always from code constants */}
+function idFor(a){return a.length?Math.max(...a.map(x=>Number(x.id)||0))+1:1}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function money(n){return '$'+(Number(n)||0).toFixed(2)}
+function toast(m){let t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2500)}
+document.querySelectorAll('.tab').forEach(b=>{
+  b.addEventListener('click',e=>{e.preventDefault();show(b.dataset.screen);});
+});
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('active');
+  const tab=document.querySelector(`[data-screen="${id}"]`);
+  if(tab)tab.classList.add('active');
+  window.scrollTo(0,0);
+}
+function clientName(id){const c=db.clients.find(x=>String(x.id)===String(id));return c?`${c.first} ${c.last}`.trim():'No client'}
+function renderAll(){renderDashboard();renderClients();renderClientOptions();renderQuotes();renderBuilderOptions();renderHotels();renderInvoices();renderExpenses();renderExpenseClientOptions()}
+// ── NUMBER GENERATORS ─────────────────────────────────────────────────────
+function nextInvNo(){const nums=db.invoices.map(i=>{const m=String(i.invoiceNo||'').match(/INV-(\d+)/);return m?Number(m[1]):0});return 'INV-'+String((nums.length?Math.max(...nums):0)+1).padStart(3,'0')}
+function nextExpNo(){const nums=db.expenses.map(e=>{const m=String(e.expNo||'').match(/EXP-(\d+)/);return m?Number(m[1]):0});return 'EXP-'+String((nums.length?Math.max(...nums):0)+1).padStart(3,'0')}
+// ── CLIENT P&L ENGINE ─────────────────────────────────────────────────────
+function clientPnl(clientId){
+  const cInvs=db.invoices.filter(i=>{const q=db.quotes.find(x=>x.id==i.quoteId);return q&&String(q.clientId)===String(clientId)});
+  const invoiced=cInvs.reduce((s,i)=>s+Number(i.total||0),0);
+  const paid=cInvs.reduce((s,i)=>s+Number(i.paid||0),0);
+  const expenses=db.expenses.filter(e=>String(e.clientId)===String(clientId)).reduce((s,e)=>s+Number(e.amount||0),0);
+  return{invoiced,paid,due:invoiced-paid,expenses,net:invoiced-expenses};
+}
+function renderDashboard(){
+  kClients.textContent=db.clients.length;
+  kQuotes.textContent=db.quotes.length;
+  kInvoices.textContent=db.invoices.length;
+  kDue.textContent=money(db.invoices.reduce((s,i)=>s+Math.max(0,Number(i.total||0)-Number(i.paid||0)),0));
+  const totalExp=db.expenses.reduce((s,e)=>s+Number(e.amount||0),0);
+  kExpenses.textContent=money(totalExp);
+  const totalInv=db.invoices.reduce((s,i)=>s+Number(i.total||0),0);
+  const net=totalInv-totalExp;
+  kProfit.textContent=money(net);
+  kProfit.style.color=net>=0?'#166534':'#991B1B';
+  // P&L table
+  pnlTable.innerHTML=db.clients.length?`<table class="pnl-table">
+    <tr><th>Client</th><th>Invoiced</th><th>Collected</th><th>Expenses</th><th>Net Profit</th><th>Balance Due</th></tr>
+    ${db.clients.map(c=>{const p=clientPnl(c.id);return`<tr><td><b>${esc(c.first+' '+c.last)}</b></td><td>${money(p.invoiced)}</td><td>${money(p.paid)}</td><td style="color:#991B1B">${money(p.expenses)}</td><td class="${p.net>=0?'net-positive':'net-negative'}">${money(p.net)}</td><td style="color:${p.due>0?'#D97706':'#166534'}">${money(p.due)}</td></tr>`}).join('')}
+  </table>`:'<p class="muted">No clients yet.</p>';
+  recentQuotes.innerHTML=db.quotes.slice(-6).reverse().map(q=>`<div class="item-card"><div><b>${esc(q.name)}</b><small>${esc(clientName(q.clientId))} · ${esc(q.hotel)} · ${esc(q.pax)} pax · ${money(calc(q).total)}</small></div><div class="actions"><button onclick="openBuilder(${q.id})">Build</button><button onclick="quickPrint(${q.id})">PDF</button></div></div>`).join('')||'<p class="muted">No quotes yet.</p>';
+}
+function renderClientOptions(){quoteClient.innerHTML='<option value="">Select client...</option>'+db.clients.map(c=>`<option value="${c.id}">${esc(c.first+' '+c.last)}</option>`).join('')}
+function renderHotels(){hotel.innerHTML='<option value="">Select hotel...</option>'+HOTELS.map(h=>`<option>${esc(h)}</option>`).join('')}
+function renderClients(){const q=(clientSearch?.value||'').toLowerCase();const rows=db.clients.filter(c=>`${c.first} ${c.last} ${c.phone} ${c.email}`.toLowerCase().includes(q));clientList.innerHTML=rows.map(c=>`<div class="item-card"><div><b>${esc(c.first)} ${esc(c.last)}</b><small>${esc(c.phone)} ${c.email?'· '+esc(c.email):''}</small></div><div class="actions"><button onclick="editClient(${c.id})">Edit</button><button class="danger" onclick="deleteClient(${c.id})">Delete</button></div></div>`).join('')||'<p class="muted">No clients yet.</p>'}
+function saveClient(){const id=clientId.value;const c={id:id?Number(id):idFor(db.clients),first:firstName.value,last:lastName.value,phone:phone.value,email:email.value,notes:clientNotes.value};if(id)db.clients[db.clients.findIndex(x=>String(x.id)===String(id))]=c;else db.clients.push(c);clearClient();saveDB();toast('Client saved')}
+function editClient(id){const c=db.clients.find(x=>x.id===id);clientId.value=c.id;firstName.value=c.first;lastName.value=c.last;phone.value=c.phone;email.value=c.email;clientNotes.value=c.notes||'';show('clients')}
+function deleteClient(id){if(confirm('Delete client?')){db.clients=db.clients.filter(c=>c.id!==id);saveDB()}}
+function clearClient(){clientId.value='';firstName.value='';lastName.value='';phone.value='';email.value='';clientNotes.value=''}
+function renderQuotes(){quoteList.innerHTML=db.quotes.map(q=>{const hasInv=db.invoices.find(i=>String(i.quoteId)===String(q.id));return`<div class="item-card"><div><b>${esc(q.name)}</b><small>${esc(clientName(q.clientId))} · ${esc(q.arrival)} · ${esc(q.hotel)} · ${money(calc(q).total)} · <span style="color:${hasInv?'#166534':'var(--muted)'}">${hasInv?'Invoiced ✓':'No invoice'}</span></small></div><div class="actions"><button onclick="editQuote(${q.id})">Edit</button><button onclick="openBuilder(${q.id})">Build</button><button onclick="quickPrint(${q.id})">PDF</button><button style="background:#EEF9F0;border:1px solid #86EFAC;color:#166534;font-weight:700;border-radius:9px;padding:8px 10px" onclick="openInvoiceModal(${q.id})">→ Invoice</button><button class="danger" onclick="deleteQuote(${q.id})">Delete</button></div></div>`}).join('')||'<p class="muted">No quotes yet.</p>'}
+function saveQuote(){const id=quoteId.value;const old=id?db.quotes.find(x=>String(x.id)===String(id)):null;const q={id:id?Number(id):idFor(db.quotes),clientId:quoteClient.value,name:quoteName.value,arrival:arrivalDate.value,departure:departureDate.value,hotel:hotel.value,pax:Number(pax.value||1),status:status.value,invoiceNo:invoiceNo.value,subtitle:subtitle.value,notes:quoteNotes.value,days:old?old.days:[]};if(id)db.quotes[db.quotes.findIndex(x=>String(x.id)===String(id))]=q;else db.quotes.push(q);clearQuote();saveDB();toast('Quote saved')}
+function editQuote(id){const q=db.quotes.find(x=>x.id===id);quoteId.value=q.id;quoteClient.value=q.clientId;quoteName.value=q.name;arrivalDate.value=q.arrival;departureDate.value=q.departure;hotel.value=q.hotel;pax.value=q.pax;status.value=q.status;invoiceNo.value=q.invoiceNo||'';subtitle.value=q.subtitle||'PANAMA CITY & SURROUNDINGS';quoteNotes.value=q.notes||'';show('quotes')}
+function deleteQuote(id){if(confirm('Delete quote?')){db.quotes=db.quotes.filter(q=>q.id!==id);saveDB()}}
+function clearQuote(){quoteId.value='';quoteClient.value='';quoteName.value='';arrivalDate.value='';departureDate.value='';hotel.value='';pax.value=2;status.value='Quote';invoiceNo.value='';subtitle.value='PANAMA CITY & SURROUNDINGS';quoteNotes.value='Experience the best of Panama — from engineering marvels and Jewish heritage to rainforest adventures, history, and culture. Crafted exclusively for you.'}
+function renderBuilderOptions(){builderQuote.innerHTML='<option value="">Select quote...</option>'+db.quotes.map(q=>`<option value="${q.id}">${esc(q.name)} — ${esc(clientName(q.clientId))}</option>`).join('')}
+function openBuilder(id){show('builder');builderQuote.value=id;loadQuoteDays()}
+function loadQuoteDays(){const q=db.quotes.find(x=>String(x.id)===String(builderQuote.value));currentDays=q?(q.days||[]):[];renderDays();renderTotals()}
+function itemOpts(v){
+  const cats=[...new Set(ITEMS.map(i=>i.category))];
+  let html='<option value="">Select activity / service...</option>';
+  cats.forEach(cat=>{
+    html+=`<optgroup label="${esc(cat)}">`;
+    ITEMS.filter(i=>i.category===cat).forEach(i=>{
+      const pp=i.type==='per person'?' /pp':'';
+      html+=`<option value="${i.id}" ${String(i.id)===String(v)?'selected':''}>${esc(i.name)} — $${i.price}${pp}</option>`;
+    });
+    html+='</optgroup>';
+  });
+  return html;
+}
+function transOpts(v){return '<option value="">Select transport...</option>'+TRANSPORT.map(t=>`<option value="${t.name}" ${t.name===v?'selected':''}>${esc(t.name)}</option>`).join('')}
+function renderDays(){
+  const q=db.quotes.find(x=>String(x.id)===String(builderQuote.value));
+  const paxCount=q?Number(q.pax||1):1;
+  days.innerHTML=currentDays.map((d,di)=>{
+    const actRows=(d.items||[]).map((a,ai)=>{
+      const it=ITEMS.find(x=>String(x.id)===String(a.itemId));
+      const unitPrice=it?it.price:0;
+      const qty=Number(a.qty||1);
+      const lineTotal=unitPrice*qty;
+      const isPerPerson=it&&it.type==='per person';
+      const hint=it?`${isPerPerson?'<b>Per person</b> — qty = number of people':'<b>Fixed</b> — qty = number of services'} · ${esc(it.desc.substring(0,100))}...`:'';
+      return `<div class="act-row">
+        <div class="act-row-top">
+          <div>
+            <div class="col-label">Activity / Service</div>
+            <select onchange="onItemChange(${di},${ai},this.value)">${itemOpts(a.itemId)}</select>
+            <div class="item-desc-hint" id="hint_${di}_${ai}">${hint}</div>
+          </div>
+          <div>
+            <div class="col-label">Qty${isPerPerson?' (people)':''}</div>
+            <input type="number" min="1" value="${qty}" oninput="currentDays[${di}].items[${ai}].qty=Number(this.value);updateActTotal(${di},${ai});renderTotals()">
+          </div>
+          <div>
+            <div class="col-label">Unit Price</div>
+            <input readonly value="${money(unitPrice)}" id="uprice_${di}_${ai}" style="text-align:right">
+          </div>
+          <div>
+            <div class="col-label">Line Total</div>
+            <div class="line-total-chip" id="ltotal_${di}_${ai}">${money(lineTotal)}</div>
+          </div>
+          <div style="padding-top:20px"><button class="danger" onclick="removeItem(${di},${ai})">✕</button></div>
+        </div>
+        <div class="act-row-bottom">
+          <input placeholder="Custom notes / includes for PDF..." value="${esc(a.notes||'')}" oninput="currentDays[${di}].items[${ai}].notes=this.value">
+        </div>
+      </div>`;
+    }).join('');
+    const trRows=(d.transport||[]).map((tr,ti)=>{
+      const row=TRANSPORT.find(y=>y.name===tr.name);
+      const unitPrice=transportPrice(row,paxCount);
+      const qty=Number(tr.qty||1);
+      const lineTotal=unitPrice*qty;
+      return `<div class="tr-row">
+        <div class="tr-row-top">
+          <div>
+            <div class="col-label">Transport Type</div>
+            <select onchange="currentDays[${di}].transport[${ti}].name=this.value;renderDays();renderTotals()">${transOpts(tr.name)}</select>
+          </div>
+          <div>
+            <div class="col-label">Pax</div>
+            <input readonly value="${paxCount}" style="text-align:center">
+          </div>
+          <div>
+            <div class="col-label">Unit Price</div>
+            <input readonly value="${money(unitPrice)}" id="tprice_${di}_${ti}" style="text-align:right">
+          </div>
+          <div>
+            <div class="col-label">Qty (vehicles)</div>
+            <input type="number" min="1" value="${qty}" oninput="currentDays[${di}].transport[${ti}].qty=Number(this.value);updateTransTotal(${di},${ti});renderTotals()">
+          </div>
+          <div>
+            <div class="col-label">Line Total</div>
+            <div class="line-total-chip" id="ttotal_${di}_${ti}">${money(lineTotal)}</div>
+          </div>
+          <div style="padding-top:20px"><button class="danger" onclick="removeTransport(${di},${ti})">✕</button></div>
+        </div>
+        <div class="tr-row-bottom">
+          <input placeholder="Transport notes..." value="${esc(tr.notes||'')}" oninput="currentDays[${di}].transport[${ti}].notes=this.value">
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="day">
+      <div class="day-head">
+        <b>DAY ${di+1}</b>
+        <input placeholder="Day title" value="${esc(d.title||'')}" oninput="currentDays[${di}].title=this.value">
+        <button class="danger" onclick="removeDay(${di})">Delete</button>
+      </div>
+      <div class="day-body">
+        <div class="row">
+          <div><label>Date Label</label><input placeholder="Wednesday, June 17" value="${esc(d.date||'')}" oninput="currentDays[${di}].date=this.value"></div>
+          <div><label>Schedule</label><input placeholder="8:30 AM - 4:00 PM" value="${esc(d.schedule||'')}" oninput="currentDays[${di}].schedule=this.value"></div>
+        </div>
+        <label>Day Description</label>
+        <textarea oninput="currentDays[${di}].notes=this.value">${esc(d.notes||'')}</textarea>
+        <div class="line-section">
+          <div class="line-section-title">🎯 Activities, Tours &amp; Services — Price × Qty = Total</div>
+          <div style="display:grid;grid-template-columns:1.8fr 90px 110px 110px auto;gap:8px;padding:2px 12px 4px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">
+            <span>Item</span><span>Qty</span><span>Unit Price</span><span>Line Total</span><span></span>
+          </div>
+          ${actRows}
+          <button class="secondary" onclick="addItem(${di})">+ Add Activity / Service</button>
+        </div>
+        <div class="line-section">
+          <div class="line-section-title">🚐 Transport — Price auto-set by ${paxCount} pax · Qty = vehicles (default 1)</div>
+          <div style="display:grid;grid-template-columns:1.6fr 80px 110px 80px 110px auto;gap:8px;padding:2px 12px 4px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">
+            <span>Route / Type</span><span>Pax</span><span>Unit Price</span><span>Qty</span><span>Line Total</span><span></span>
+          </div>
+          ${trRows}
+          <button class="secondary" onclick="addTransport(${di})">+ Add Transport</button>
+        </div>
+        <label>Restaurant / Reservation Note</label>
+        <input value="${esc(d.restaurant||'')}" placeholder="Restaurant Reservation at Aria — 7:30 PM" oninput="currentDays[${di}].restaurant=this.value">
+      </div>
+    </div>`;
+  }).join('')||'<div class="panel"><p class="muted">No days yet. Tap + Add Day.</p></div>';
+}
+function addDay(){currentDays.push({title:'',date:'',schedule:'',notes:'',items:[],transport:[],restaurant:''});renderDays()}
+function removeDay(i){currentDays.splice(i,1);renderDays();renderTotals()}
+function addItem(i){
+  const q=db.quotes.find(x=>String(x.id)===String(builderQuote.value));
+  const paxCount=q?Number(q.pax||1):1;
+  currentDays[i].items.push({itemId:'',qty:paxCount,notes:''});
+  renderDays();
+}
+function removeItem(i,j){currentDays[i].items.splice(j,1);renderDays();renderTotals()}
+function addTransport(i){currentDays[i].transport.push({name:'',qty:1,notes:''});renderDays()}
+function removeTransport(i,j){currentDays[i].transport.splice(j,1);renderDays();renderTotals()}
+function onItemChange(di,ai,val){
+  currentDays[di].items[ai].itemId=val;
+  const it=ITEMS.find(x=>String(x.id)===String(val));
+  const qty=Number(currentDays[di].items[ai].qty||1);
+  const up=it?it.price:0;
+  const isPerPerson=it&&it.type==='per person';
+  const hint=it?`${isPerPerson?'<b>Per person</b> — qty = number of people':'<b>Fixed</b> — qty = number of services'} · ${esc(it.desc.substring(0,100))}...`:'';
+  const hEl=document.getElementById(`hint_${di}_${ai}`);
+  const uEl=document.getElementById(`uprice_${di}_${ai}`);
+  const lEl=document.getElementById(`ltotal_${di}_${ai}`);
+  if(hEl)hEl.innerHTML=hint;if(uEl)uEl.value=money(up);if(lEl)lEl.textContent=money(up*qty);
+  renderTotals();
+}
+function updateActTotal(di,ai){
+  const a=currentDays[di].items[ai];
+  const it=ITEMS.find(x=>String(x.id)===String(a.itemId));
+  const up=it?it.price:0,qty=Number(a.qty||1);
+  const el=document.getElementById(`ltotal_${di}_${ai}`);
+  if(el)el.textContent=money(up*qty);
+}
+function updateTransTotal(di,ti){
+  const q=db.quotes.find(x=>String(x.id)===String(builderQuote.value));
+  const paxCount=q?Number(q.pax||1):1;
+  const tr=currentDays[di].transport[ti];
+  const row=TRANSPORT.find(y=>y.name===tr.name);
+  const up=transportPrice(row,paxCount),qty=Number(tr.qty||1);
+  const el=document.getElementById(`ttotal_${di}_${ti}`);
+  if(el)el.textContent=money(up*qty);
+}
+function saveItinerary(){const q=db.quotes.find(x=>String(x.id)===String(builderQuote.value));if(!q)return alert('Select a quote first');q.days=currentDays;saveDB();builderQuote.value=q.id;loadQuoteDays();toast('Quote saved')}
+function transportPrice(row,p){if(!row)return 0;if(p<=2)return row.p2;if(p<=6)return row.p6;if(p<=9)return row.p9;if(p<=14)return row.p14;return row.p30}
+function lineItems(q){
+  let rows=[],p=Number(q.pax||1);
+  (q.days||[]).forEach((d,di)=>{
+    // Activities: unit price × qty. For per-person items qty IS the number of people.
+    (d.items||[]).forEach(a=>{
+      let it=ITEMS.find(x=>String(x.id)===String(a.itemId));
+      if(!it)return;
+      let qty=Number(a.qty||1),unit=it.price;
+      rows.push({day:di+1,name:it.name,category:it.category,desc:a.notes||it.desc,qty,unit,total:qty*unit});
+    });
+    // Transport: unit price from pax-tiered table × qty (number of vehicles, default 1)
+    (d.transport||[]).forEach(x=>{
+      let tr=TRANSPORT.find(y=>y.name===x.name);
+      if(!tr)return;
+      let qty=Number(x.qty||1),unit=transportPrice(tr,p);
+      rows.push({day:di+1,name:x.name,category:'Transportation',desc:x.notes||'Private transportation coordinated by Premium Kosher Tours.',qty,unit,total:qty*unit});
+    });
+  });
+  return rows;
+}
+function calc(q){let rows=lineItems(q),before=rows.reduce((s,r)=>s+r.total,0),tax=before*TAX,total=before+tax;return{rows,before,tax,total,pp:total/(Number(q.pax||1)||1)}}
+function renderTotals(){let q=db.quotes.find(x=>String(x.id)===String(builderQuote.value));if(!q){builderTotals.innerHTML='';return}q.days=currentDays;let c=calc(q);builderTotals.innerHTML=`<div><span>People (Pax)</span><b>${q.pax}</b></div><div><span>Total Before Tax</span><b>${money(c.before)}</b></div><div><span>Tax 7%</span><b>${money(c.tax)}</b></div><div><span>Total After Tax</span><b>${money(c.total)}</b></div><div><span>Price Per Person</span><b>${money(c.pp)}</b></div>`}
+function printDoc(html){
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  setTimeout(()=>w.print(),800);
+}
+
+const PRINT_CSS=`
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:letter;margin:0}
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{page-break-after:always}}
+body{background:#0B1730;font-family:Arial,Helvetica,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:8.5in;min-height:11in;background:#14254A;color:#EEF2FF;position:relative;padding:0;border-top:7px solid #C8A84B;border-bottom:7px solid #C8A84B;overflow:hidden;page-break-after:always}
+.page-inner{padding:.55in .68in;min-height:calc(11in - 14px)}
+
+/* ── COVER ── */
+.cover-logo{width:140px;height:140px;object-fit:cover;display:block;margin:0 auto 22px;border-radius:4px}
+.cover-rule{border:none;border-top:1.5px solid #C8A84B;margin:0}
+.cover-title-block{text-align:center;padding:22px 0;border-bottom:1.5px solid #C8A84B}
+.cover-h1{font-size:46px;font-weight:900;color:#FFFFFF;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+.cover-badge{display:inline-flex;align-items:center;gap:8px;color:#E2C96B;font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.cover-badge-bar{display:inline-block;width:28px;height:4px;background:#C8A84B}
+.cover-sub{font-size:13px;color:#E2C96B;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-top:8px}
+.cover-copy{text-align:center;color:#D8E0F0;font-size:13.5px;line-height:1.55;margin:24px auto;max-width:580px;padding-bottom:24px;border-bottom:1.5px solid #C8A84B}
+.cover-copy b{color:#E2C96B}
+.prepared-label{text-align:center;color:#E2C96B;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin-top:28px;margin-bottom:10px}
+.prepared-name{text-align:center;color:#E2C96B;font-size:38px;font-weight:900;margin-bottom:12px}
+.prepared-meta{text-align:center;color:#D0D8EE;font-size:12.5px;line-height:1.7;padding-bottom:24px;border-bottom:1.5px solid #C8A84B}
+.daily-label{text-align:center;color:#E2C96B;font-size:18px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-top:28px}
+
+/* ── DAY PAGES ── */
+.day-header{border-top:1.5px solid #C8A84B;border-bottom:1.5px solid #C8A84B;padding:9px 0;margin-bottom:16px}
+.day-header-text{color:#E2C96B;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.activity-title{color:#E2C96B;font-size:13px;font-weight:800;text-transform:uppercase;margin:14px 0 6px}
+.body-text{font-size:12px;line-height:1.5;color:#DDE4F5;margin-bottom:10px}
+.includes-label{color:#E2C96B;font-size:11px;font-weight:800;text-transform:uppercase;margin-bottom:5px}
+.includes-list{list-style:none;margin:0 0 10px 0;padding:0}
+.includes-list li{font-size:11.5px;color:#DDE4F5;padding:2px 0;padding-left:14px;position:relative}
+.includes-list li::before{content:'›';position:absolute;left:0;color:#C8A84B}
+
+/* ── TABLE ── */
+.gold-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:11px}
+.gold-table th{padding:7px 8px;background:rgba(20,37,74,0.95);color:#E2C96B;text-align:left;border:1px solid rgba(200,168,75,.5);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.gold-table td{padding:7px 8px;border:1px solid rgba(200,168,75,.35);color:#EEF2FF;vertical-align:middle}
+.gold-table tr.subtotal td{color:#AAB8D8;font-size:10.5px}
+.gold-table tr.tax-row td{color:#AAB8D8;font-size:10.5px}
+.gold-table tr.grand-total td{color:#E2C96B;font-weight:800;background:rgba(200,168,75,.08)}
+.right{text-align:right}
+.dash{text-align:center;color:#AAB8D8}
+.included-cell{color:#AAB8D8;font-style:italic;text-align:right}
+
+/* ── RESTAURANT / NOTE ── */
+.reserve-note{border-left:4px solid #C8A84B;padding:6px 10px;margin:12px 0;background:rgba(200,168,75,.07)}
+.reserve-title{color:#E2C96B;font-size:12px;font-weight:800}
+.reserve-sub{color:#AAB8D8;font-size:11px;margin-top:2px}
+
+/* ── SCHEDULE BOX ── */
+.schedule-wrap{position:absolute;left:.68in;right:.68in;bottom:.35in}
+.schedule-label{text-align:center;color:#E2C96B;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;margin-bottom:5px}
+.schedule-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.schedule-box{border:1px solid rgba(200,168,75,.45);padding:9px;text-align:center;background:rgba(20,37,74,.6)}
+.schedule-box-label{color:#E2C96B;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.16em;margin-bottom:4px}
+.schedule-box-val{color:#FFFFFF;font-size:13px;font-weight:800}
+
+/* ── FLIGHT BOX ── */
+.flight-label{text-align:center;color:#E2C96B;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;margin:10px 0 5px}
+.flight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.flight-box{border:1px solid rgba(200,168,75,.45);padding:8px;text-align:center;background:rgba(20,37,74,.6)}
+.flight-box-label{color:#E2C96B;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.16em;margin-bottom:3px}
+.flight-box-val{color:#FFFFFF;font-size:12px;font-weight:800}
+
+/* ── SUMMARY PAGE ── */
+.summary-section-title{color:#E2C96B;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin:18px 0 6px}
+.kosher-note{margin-top:20px;padding-top:16px;border-top:1px solid rgba(200,168,75,.3)}
+.kosher-title{color:#E2C96B;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.kosher-body{font-size:11px;color:#AAB8D8;line-height:1.55}
+.contact-block{margin-top:16px;padding-top:12px;border-top:1px solid rgba(200,168,75,.3)}
+.contact-text{font-size:10px;color:#AAB8D8;text-align:center}
+.footer-abs{position:absolute;bottom:.22in;left:.68in;right:.68in;text-align:center;color:#7080A0;font-size:9px;border-top:1px solid rgba(200,168,75,.2);padding-top:6px}
+`;
+
+function tableFor(rows){
+  const sub=rows.reduce((s,r)=>s+r.total,0),tax=sub*0.07,total=sub+tax;
+  const dataRows=rows.map(r=>{
+    const isZero=r.total===0;
+    const isIncluded=r.unit===0&&!isZero;
+    return `<tr>
+      <td>${r.name}</td>
+      <td class="right">${isZero?'—':r.qty}</td>
+      <td class="${isIncluded?'included-cell':'right'}">${isIncluded?'Included':isZero?'—':money(r.unit)}</td>
+      <td class="right">${isZero?'$0.00':isIncluded?'—':money(r.total)}</td>
+    </tr>`;
+  }).join('');
+  return `<table class="gold-table">
+    <tr><th>Item</th><th class="right">Qty</th><th class="right">Unit Price</th><th class="right">Total</th></tr>
+    ${dataRows}
+    <tr class="subtotal"><td colspan="3" class="right" style="color:#AAB8D8">Tax (7%)</td><td class="right">${money(tax)}</td></tr>
+    <tr class="grand-total"><td colspan="3" style="font-weight:800">TOTAL</td><td class="right">${money(total)}</td></tr>
+  </table>`;
+}
+
+function proposalHTML(q,invoice=false,inv=null){
+  const client=db.clients.find(x=>String(x.id)===String(q.clientId))||{first:'Client',last:''};
+  const all=calc(q),rows=all.rows;
+  const clientFull=esc((client.first+' '+client.last).trim());
+
+  // ── COVER PAGE ──
+  const cover=`<div class="page"><div class="page-inner">
+    <img src="logo.jpg" class="cover-logo">
+    <hr class="cover-rule">
+    <div class="cover-title-block">
+      <div class="cover-h1">${invoice?'INVOICE':'TOUR ITINERARY'}</div>
+      <div class="cover-badge"><span class="cover-badge-bar"></span>PERSONALIZED PROGRAM<span class="cover-badge-bar"></span></div>
+      <div class="cover-sub">${esc(q.subtitle||'PANAMA CITY &amp; SURROUNDINGS')}</div>
+    </div>
+    <div class="cover-copy">${esc(q.notes||'Experience the best of Panama — crafted exclusively for you.')}</div>
+    <div class="prepared-label">Prepared For</div>
+    <div class="prepared-name">${clientFull}</div>
+    <div class="prepared-meta">
+      ${esc(q.hotel||'Panama City Hotel')}<br>
+      ${q.invoiceNo?'Invoice #'+esc(q.invoiceNo)+' · ':''}Contact: David Cohen<br>
+      premiumkoshertourspty@gmail.com · +507 6245-8980
+    </div>
+    <div class="daily-label">${invoice?'INVOICE DETAILS':'DAILY PROGRAM'}</div>
+  </div></div>`;
+
+  // ── DAY PAGES ──
+  const pages=(q.days||[]).map((d,i)=>{
+    const dr=rows.filter(r=>r.day===i+1);
+    const parts=(d.schedule||'').split('-');
+    const startT=(parts[0]||'').trim();
+    const endT=(parts[1]||'').trim();
+    return `<div class="page"><div class="page-inner">
+      <div class="day-header">
+        <div class="day-header-text">DAY ${i+1}${d.date?' · '+esc(d.date):''} — ${esc(d.title||'')}</div>
+      </div>
+      <div class="activity-title">${esc(d.title||'')}</div>
+      <div class="body-text">${esc(d.notes||'A curated Premium Kosher Tours experience in Panama.')}</div>
+      <div class="includes-label">✦ Includes</div>
+      <ul class="includes-list">${dr.map(r=>`<li>${esc(r.desc||r.name)}</li>`).join('')}</ul>
+      ${tableFor(dr)}
+      ${d.restaurant?`<div class="reserve-note"><div class="reserve-title">${esc(d.restaurant)}</div></div>`:''}
+      <div class="schedule-wrap">
+        <div class="schedule-label">Schedule</div>
+        <div class="schedule-grid">
+          <div class="schedule-box"><div class="schedule-box-label">Start Time</div><div class="schedule-box-val">${esc(startT)||'—'}</div></div>
+          <div class="schedule-box"><div class="schedule-box-label">End Time</div><div class="schedule-box-val">${esc(endT)||'—'}</div></div>
+        </div>
+      </div>
+    </div></div>`;
+  }).join('');
+
+  // ── SUMMARY PAGE ──
+  const paid=inv?Number(inv.paid||0):0;
+  const summary=`<div class="page"><div class="page-inner">
+    <div class="day-header">
+      <div class="day-header-text">${invoice?'INVOICE SUMMARY':'PACKAGE SUMMARY &amp; PRICING'}</div>
+    </div>
+    <table class="gold-table" style="margin-top:0">
+      <tr><th>Description</th><th class="right">Amount</th></tr>
+      <tr><td>Total Before Tax</td><td class="right">${money(all.before)}</td></tr>
+      <tr class="subtotal"><td>Tax (7% ITBMS)</td><td class="right">${money(all.tax)}</td></tr>
+      <tr class="grand-total"><td>Total After Tax</td><td class="right">${money(all.total)}</td></tr>
+      ${invoice
+        ?`<tr class="subtotal"><td>Amount Paid</td><td class="right">${money(paid)}</td></tr>
+           <tr class="grand-total"><td>Balance Due</td><td class="right">${money(all.total-paid)}</td></tr>`
+        :`<tr class="subtotal"><td>Price Per Person (${q.pax} pax)</td><td class="right">${money(all.pp)}</td></tr>`}
+    </table>
+    <div class="kosher-note">
+      <div class="kosher-title">Kosher Dining in Panama City</div>
+      <div class="kosher-body">Kosher food is readily available throughout Panama City, certified by the Vaadat Kashrut Shevet Achim. With over 30 certified kosher restaurants offering diverse options — meat, dairy, and parve — observant travelers can dine with full confidence. A wide selection of options in the Paitilla and Obarrio neighborhoods are within easy reach of your hotel.</div>
+    </div>
+    <div class="contact-block">
+      <div class="contact-text">David E. Cohen · +507 6245-8980 · premiumkoshertourspty@gmail.com</div>
+    </div>
+    <div class="footer-abs">Tours subject to availability · Total due within 10 days of invoice · Make all checks payable to PREMIUM KOSHER TOURS</div>
+  </div></div>`;
+
+  const body=invoice?cover+summary:cover+pages+summary;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>PKT — ${clientFull}</title><style>${PRINT_CSS}</style></head><body>${body}</body></html>`;
+}
+
+function printProposal(){
+  saveItinerary();
+  const q=db.quotes.find(x=>String(x.id)===String(builderQuote.value));
+  if(!q)return alert('Select a quote first');
+  printDoc(proposalHTML(q,false,null));
+}
+function printInvoice(id){
+  const i=db.invoices.find(x=>x.id==id),q=db.quotes.find(x=>x.id==i.quoteId);
+  if(!i||!q)return;
+  printDoc(proposalHTML(q,true,i));
+}
+function quickPrint(id){builderQuote.value=id;loadQuoteDays();printProposal()}
+function createInvoice(){saveItinerary();const q=db.quotes.find(x=>String(x.id)===String(builderQuote.value));if(!q)return alert('Select quote first');const c=calc(q);if(!db.invoices.find(i=>String(i.quoteId)===String(q.id))){db.invoices.push({id:idFor(db.invoices),quoteId:q.id,invoiceNo:q.invoiceNo||nextInvNo(),status:'Draft',dueDate:'',total:c.total,paid:0,instructions:'Payment due within 10 days of invoice.'})}saveDB();show('invoices');toast('Invoice created')}
+function renderInvoices(){
+  invoiceSelect.innerHTML='<option value="">Select invoice...</option>'+db.invoices.map(i=>`<option value="${i.id}">${esc(i.invoiceNo)} — ${esc(clientName((db.quotes.find(x=>x.id==i.quoteId)||{}).clientId))}</option>`).join('');
+  invoiceList.innerHTML=db.invoices.map(i=>{const q=db.quotes.find(x=>x.id==i.quoteId)||{},bal=Math.max(0,(Number(i.total)||0)-(Number(i.paid)||0));return`<div class="item-card"><div><b><span class="inv-badge">${esc(i.invoiceNo)}</span> ${esc(clientName(q.clientId))}</b><small>${esc(q.name)} · Billed ${money(i.total)} · Paid ${money(i.paid||0)} · <span style="color:${bal>0?'#D97706':'#166534'};font-weight:700">Due ${money(bal)}</span></small></div><div class="actions"><button onclick="editInvoice(${i.id})">Edit</button><button onclick="printInvoice(${i.id})">PDF</button></div></div>`}).join('')||'<p class="muted">No invoices yet.</p>';
+  // Client P&L panel
+  document.getElementById('clientPnl').innerHTML=db.clients.length?`<table class="pnl-table">
+    <tr><th>Client</th><th>Invoiced</th><th>Collected</th><th>Expenses</th><th>Net Profit</th><th>Balance Due</th></tr>
+    ${db.clients.map(c=>{const p=clientPnl(c.id);if(!p.invoiced&&!p.expenses)return'';return`<tr><td><b>${esc(c.first+' '+c.last)}</b></td><td>${money(p.invoiced)}</td><td>${money(p.paid)}</td><td style="color:#991B1B">${money(p.expenses)}</td><td class="${p.net>=0?'net-positive':'net-negative'}">${money(p.net)}</td><td style="color:${p.due>0?'#D97706':'#166534'}">${money(p.due)}</td></tr>`}).join('')}
+  </table>`:'<p class="muted">Add invoices and expenses to see P&L per client.</p>';
+}
+function editInvoice(id){invoiceSelect.value=id;loadInvoice()}
+function loadInvoice(){let i=db.invoices.find(x=>String(x.id)===String(invoiceSelect.value));if(!i)return;invoiceEditNo.value=i.invoiceNo;invoiceStatus.value=i.status;invoiceDue.value=i.dueDate||'';invoicePaid.value=i.paid||0;invoiceInstructions.value=i.instructions||''}
+function saveInvoice(){let i=db.invoices.find(x=>String(x.id)===String(invoiceSelect.value));if(!i)return alert('Select invoice');i.invoiceNo=invoiceEditNo.value;i.status=invoiceStatus.value;i.dueDate=invoiceDue.value;i.paid=Number(invoicePaid.value||0);i.instructions=invoiceInstructions.value;saveDB();toast('Invoice saved')}
+function printInvoiceSelected(){let i=db.invoices.find(x=>String(x.id)===String(invoiceSelect.value));if(!i)return alert('Select invoice');printInvoice(i.id)}
+// ── EXPENSE FUNCTIONS ─────────────────────────────────────────────────────
+function renderExpenseClientOptions(){
+  const opts='<option value="">General / Company</option>'+db.clients.map(c=>`<option value="${c.id}">${esc(c.first+' '+c.last)}</option>`).join('');
+  if(document.getElementById('expClient')) expClient.innerHTML=opts;
+  if(document.getElementById('expFilterClient')) expFilterClient.innerHTML='<option value="">All Clients</option>'+db.clients.map(c=>`<option value="${c.id}">${esc(c.first+' '+c.last)}</option>`).join('');
+}
+function renderExpenseInvoiceOptions(clientId){
+  const filtered=db.invoices.filter(i=>{if(!clientId)return true;const q=db.quotes.find(x=>x.id==i.quoteId);return q&&String(q.clientId)===String(clientId)});
+  expInvoice.innerHTML='<option value="">No linked invoice</option>'+filtered.map(i=>`<option value="${i.id}">${esc(i.invoiceNo)}</option>`).join('');
+}
+function newExpenseForm(){
+  const no=nextExpNo();
+  expNo.value=no;
+  expDate.value=new Date().toISOString().slice(0,10);
+  renderExpenseInvoiceOptions('');
+}
+function saveExpense(){
+  const id=expId.value;
+  const e={
+    id:id?Number(id):idFor(db.expenses),
+    expNo:id?(db.expenses.find(x=>String(x.id)===String(id))||{}).expNo||nextExpNo():nextExpNo(),
+    date:expDate.value,
+    clientId:expClient.value,
+    category:expCategory.value,
+    amount:Number(expAmount.value||0),
+    vendor:expVendor.value,
+    notes:expNotes.value,
+    method:expMethod.value,
+    invoiceId:expInvoice.value
+  };
+  if(id) db.expenses[db.expenses.findIndex(x=>String(x.id)===String(id))]=e;
+  else db.expenses.push(e);
+  clearExpense();saveDB();toast('Expense saved');
+}
+function editExpense(id){
+  const e=db.expenses.find(x=>x.id==id);
+  expId.value=e.id;expNo.value=e.expNo;expDate.value=e.date||'';
+  expClient.value=e.clientId||'';expCategory.value=e.category||'Other';
+  expAmount.value=e.amount||0;expVendor.value=e.vendor||'';
+  expNotes.value=e.notes||'';expMethod.value=e.method||'Cash';
+  renderExpenseInvoiceOptions(e.clientId);
+  expInvoice.value=e.invoiceId||'';
+  show('expenses');
+}
+function deleteExpense(id){if(confirm('Delete expense?')){db.expenses=db.expenses.filter(e=>e.id!=id);saveDB()}}
+function clearExpense(){expId.value='';newExpenseForm();expClient.value='';expCategory.value='Transport / Driver';expAmount.value='';expVendor.value='';expNotes.value='';expMethod.value='Cash';expInvoice.value=''}
+function renderExpenses(){
+  const fc=document.getElementById('expFilterClient')?.value||'';
+  const fcat=document.getElementById('expFilterCat')?.value||'';
+  let rows=db.expenses.filter(e=>{
+    if(fc&&String(e.clientId)!==String(fc))return false;
+    if(fcat&&e.category!==fcat)return false;
+    return true;
+  }).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const total=rows.reduce((s,e)=>s+Number(e.amount||0),0);
+  expenseList.innerHTML=rows.map(e=>{
+    const client=e.clientId?db.clients.find(x=>String(x.id)===String(e.clientId)):null;
+    const inv=e.invoiceId?db.invoices.find(x=>x.id==e.invoiceId):null;
+    return`<div class="exp-card"><div style="flex:1"><b><span class="exp-badge">${esc(e.expNo)}</span> ${esc(e.vendor||e.category)}</b><small>${esc(e.date||'')} · ${esc(e.category)} · ${client?'Client: '+esc(client.first+' '+client.last):'General'} ${inv?'· Linked to '+esc(inv.invoiceNo):''}</small><small style="color:var(--muted)">${esc(e.notes||'')}</small></div><div style="text-align:right;min-width:90px"><b style="color:#991B1B;font-size:16px">${money(e.amount)}</b><br><small style="color:var(--muted)">${esc(e.method||'')}</small></div><div class="actions" style="margin-left:8px"><button onclick="editExpense(${e.id})">Edit</button><button class="danger" onclick="deleteExpense(${e.id})">Del</button></div></div>`;
+  }).join('')||'<p class="muted">No expenses yet.</p>';
+  expenseTotals.innerHTML=`<div><span>Showing ${rows.length} expense${rows.length!==1?'s':''}</span><b>${money(total)}</b></div>`;
+}
+function openInvoiceModalFromBuilder(){saveItinerary();const id=builderQuote.value;if(!id)return alert('Select a quote first');openInvoiceModal(Number(id))}
+// ── INVOICE MODAL ─────────────────────────────────────────────────────────
+let _modalQuoteId=null;
+function openInvoiceModal(qid){
+  const q=db.quotes.find(x=>x.id==qid);
+  if(!q)return;
+  _modalQuoteId=qid;
+  const client=db.clients.find(x=>String(x.id)===String(q.clientId))||{first:'No',last:'client'};
+  const existing=db.invoices.find(i=>String(i.quoteId)===String(qid));
+  const c=calc(q);
+
+  // Header
+  modalTitle.textContent=existing?'Edit Invoice — '+esc(existing.invoiceNo):'Convert Quote → Invoice';
+
+  // Client info
+  mClient.textContent=(client.first+' '+client.last).trim();
+  mTrip.textContent=q.name||'—';
+  mHotel.textContent=q.hotel||'—';
+  mDates.textContent=[(q.arrival||''),( q.departure||'')].filter(Boolean).join(' → ')||'—';
+  mPax.textContent=q.pax||'—';
+
+  // Line items grouped by day
+  const dayGroups={};
+  c.rows.forEach(r=>{if(!dayGroups[r.day])dayGroups[r.day]=[];dayGroups[r.day].push(r)});
+  mLineItems.innerHTML=Object.entries(dayGroups).map(([day,rows])=>{
+    const d=(q.days||[])[Number(day)-1];
+    return`<div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px">Day ${day}${d&&d.title?' — '+esc(d.title):''}</div>
+      ${rows.map(r=>`<div class="inv-line"><span>${esc(r.name)}${r.qty>1?' ×'+r.qty:''}</span><b>${money(r.total)}</b></div>`).join('')}
+    </div>`;
+  }).join('')||'<p class="muted" style="font-size:12px">No line items yet — build the itinerary first.</p>';
+
+  // Totals
+  mTotals.innerHTML=`
+    <div class="inv-total-row"><span>Subtotal (before tax)</span><span>${money(c.before)}</span></div>
+    <div class="inv-total-row"><span>Tax (7% ITBMS)</span><span>${money(c.tax)}</span></div>
+    <div class="inv-grand"><span style="color:rgba(255,255,255,.8)">Total After Tax</span><b>${money(c.total)}</b></div>`;
+
+  // Pre-fill invoice fields
+  mInvNo.value=existing?existing.invoiceNo:(q.invoiceNo||nextInvNo());
+  mDueDate.value=existing?existing.dueDate||'':'';
+  mStatus.value=existing?existing.status:'Draft';
+  mPaid.value=existing?existing.paid||0:0;
+  mInstructions.value=existing?existing.instructions||'':'Payment may be completed by bank transfer, credit card link, or another method agreed with Premium Kosher Tours. Total due within 10 days of invoice.';
+  updateModalBalance(c.total);
+  mPaid.oninput=()=>updateModalBalance(c.total);
+
+  invoiceModal.classList.add('open');
+}
+function updateModalBalance(total){
+  const bal=total-Number(mPaid.value||0);
+  mBalance.textContent=money(Math.max(0,bal));
+  mBalance.style.color=bal<=0?'#86EFAC':var_gold2();
+}
+function var_gold2(){return'#E2C96B'}
+function closeInvoiceModal(){invoiceModal.classList.remove('open');_modalQuoteId=null}
+function confirmInvoice(){
+  if(!_modalQuoteId)return;
+  const q=db.quotes.find(x=>x.id==_modalQuoteId);
+  if(!q)return;
+  const c=calc(q);
+  const existing=db.invoices.find(i=>String(i.quoteId)===String(_modalQuoteId));
+  const inv={
+    id:existing?existing.id:idFor(db.invoices),
+    quoteId:_modalQuoteId,
+    invoiceNo:mInvNo.value||nextInvNo(),
+    status:mStatus.value,
+    dueDate:mDueDate.value,
+    total:c.total,
+    paid:Number(mPaid.value||0),
+    instructions:mInstructions.value
+  };
+  if(existing) db.invoices[db.invoices.findIndex(i=>i.id==existing.id)]=inv;
+  else db.invoices.push(inv);
+  // Update quote status to match
+  if(mStatus.value==='Confirmed'||mStatus.value==='Paid') q.status=mStatus.value;
+  closeInvoiceModal();
+  saveDB();
+  show('invoices');
+  toast('Invoice '+inv.invoiceNo+' saved');
+}
+function confirmAndPrintInvoice(){
+  const qid=_modalQuoteId;
+  confirmInvoice();
+  setTimeout(()=>{
+    const inv=db.invoices.find(i=>String(i.quoteId)===String(qid));
+    const qq=db.quotes.find(x=>String(x.id)===String(qid));
+    if(inv&&qq)printDoc(proposalHTML(qq,true,inv));
+  },300);
+}
+// Close modal on overlay click
+invoiceModal.addEventListener('click',e=>{if(e.target===invoiceModal)closeInvoiceModal()});
+function exportBackup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='PKT_CRM_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
+function importBackup(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);db.clients=d.clients||[];db.quotes=d.quotes||[];db.invoices=d.invoices||[];db.expenses=d.expenses||[];saveDB();toast('Backup restored')}catch(err){alert('Could not restore backup')}};r.readAsText(f)}
+renderAll();
+newExpenseForm();
+</script>
+</body>
+</html>
