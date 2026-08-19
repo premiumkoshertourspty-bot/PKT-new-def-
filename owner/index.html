@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B1730">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PKT Owner">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="logo.jpg">
+<title>Premium Kosher Tours — Owner</title>
+<style>
+:root{--navy:#0B1730;--navy2:#182A52;--gold:#C8A84B;--gold2:#E2C96B;--bg:#F4F6FB;--text:#172033;--muted:#64748B;--line:#E2E8F0;--header-h:90px;--nav-h:52px}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--text);height:100%;-webkit-overflow-scrolling:touch;overflow-y:auto}
+header{position:fixed;top:0;left:0;right:0;z-index:20;background:linear-gradient(135deg,#071126,var(--navy2));color:white;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+header img{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+header h1{margin:0;color:var(--gold2);font-size:17px;letter-spacing:.08em;text-transform:uppercase}
+header p{margin:4px 0 0;color:rgba(255,255,255,.7);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+nav{position:fixed;top:calc(var(--header-h) + env(safe-area-inset-top));left:0;right:0;z-index:19;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;background:white;padding:8px 10px;border-bottom:1px solid var(--line)}
+nav::-webkit-scrollbar{display:none}
+nav button{white-space:nowrap;border:1px solid #D8BF6A;background:white;color:var(--navy);font-weight:700;border-radius:999px;padding:9px 14px;flex-shrink:0;touch-action:manipulation;cursor:pointer}
+nav button.active{background:var(--navy);color:var(--gold2)}
+main{padding:16px;padding-top:calc(var(--header-h) + var(--nav-h) + env(safe-area-inset-top) + 16px);max-width:1200px;margin:auto}
+.screen{display:none}.screen.active{display:block}
+.panel{background:white;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 8px 26px rgba(15,23,42,.08)}
+h2{margin:0 0 4px;color:var(--navy);font-size:24px}h3{margin:0 0 12px;color:var(--navy)}
+.muted{color:var(--muted);line-height:1.45;font-size:13px}
+label{display:block;margin:12px 0 5px;text-transform:uppercase;letter-spacing:.1em;font-size:10px;font-weight:800;color:#A77F25}
+input,select,textarea{width:100%;padding:11px;border:1px solid #CBD5E1;border-radius:10px;font-size:15px;background:white;font-family:inherit}
+textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:760px){.row,.three,.kanban{grid-template-columns:1fr}.line-item-grid{grid-template-columns:1fr!important}}
+button{font-family:inherit;cursor:pointer}
+.gold{background:linear-gradient(135deg,var(--gold),var(--gold2));border:0;color:var(--navy);font-weight:800;border-radius:10px;padding:12px 15px;margin-top:12px}
+.secondary{background:#EEF2F7;border:1px solid #CBD5E1;color:#334155;font-weight:700;border-radius:10px;padding:11px 14px;margin-top:12px}
+.danger{background:#FEE2E2;border:1px solid #FECACA;color:#991B1B;font-weight:700;border-radius:9px;padding:8px 11px}
+.small{padding:7px 10px;font-size:12px;border-radius:8px;border:1px solid #CBD5E1;background:#F8FAFC;font-weight:700}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi{background:white;border-top:5px solid var(--gold);border-radius:14px;padding:18px;box-shadow:0 8px 26px rgba(15,23,42,.08)}
+.kpi b{font-size:28px;color:var(--navy);display:block}.kpi span{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+.item-card{border:1px solid var(--line);border-left:5px solid var(--gold);border-radius:12px;padding:13px;margin:10px 0;background:white}
+.item-card b{color:var(--navy);display:block;margin-bottom:3px}
+.item-card small{display:block;color:var(--muted);line-height:1.4}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.line-item-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.4fr auto;gap:8px;align-items:end;background:#F8FAFC;border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0}
+.line-item-grid label{margin:0 0 4px}
+.totals{background:var(--navy);color:white;border-radius:12px;padding:14px;margin-top:12px;display:flex;justify-content:space-between}
+.totals b{color:var(--gold2);font-size:18px}
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
+.kb-col{background:#F8FAFC;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:120px}
+.kb-col h4{margin:4px 6px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:flex;justify-content:space-between}
+.kb-card{background:white;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:10px;margin-bottom:8px;box-shadow:0 4px 12px rgba(15,23,42,.06)}
+.kb-card b{color:var(--navy);display:block;font-size:14px}
+.kb-card small{color:var(--muted);display:block;margin:3px 0 8px}
+.kb-card .actions{margin-top:6px}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:#DBEAFE;color:#1E3A8A}
+.toast{position:fixed;left:16px;right:16px;bottom:16px;background:var(--navy);color:white;padding:14px;border-left:5px solid var(--gold);border-radius:12px;z-index:50;text-align:center}
+.link-box{display:flex;gap:8px;margin-top:8px}
+.link-box input{background:#F8FAFC;font-size:12px}
+.stage-init{border-top:4px solid #94A3B8}
+.stage-think{border-top:4px solid #C8A84B}
+.stage-done{border-top:4px solid #16A34A}
+</style>
+</head>
+<body>
+<header><img src="logo.jpg"><div><h1>Premium Kosher Tours</h1><p>Owner Dashboard · Quotes &amp; Trips</p></div></header>
+<nav>
+<button class="tab active" data-screen="dashboard">Dashboard</button>
+<button class="tab" data-screen="tours">Tours</button>
+<button class="tab" data-screen="quotes">Quotes</button>
+<button class="tab" data-screen="restaurants">Restaurants</button>
+<button class="tab" data-screen="settings">Settings</button>
+</nav>
+<main>
+
+<section id="dashboard" class="screen active">
+  <div class="panel"><h2>Dashboard</h2><p class="muted">Quotes move through three stages — Initiated, Thinking, Completed. Clients only ever see the trip and price you send them, never the internal stage.</p></div>
+  <div class="cards">
+    <div class="kpi"><b id="kInitiated">0</b><span>Initiated</span></div>
+    <div class="kpi"><b id="kThinking">0</b><span>Thinking</span></div>
+    <div class="kpi"><b id="kCompleted">0</b><span>Completed</span></div>
+  </div>
+  <div class="panel" style="margin-top:14px"><h3>Recent Quotes</h3><div id="recentQuotes"></div></div>
+</section>
+
+<section id="tours" class="screen">
+  <div class="panel">
+    <h2>Tour Catalog</h2>
+    <p class="muted">These are your reusable tour templates — name and description only, no fixed price. You set the actual price each time you add a tour to a specific client quote.</p>
+    <input type="hidden" id="tourId">
+    <label>Tour Name</label><input id="tourName" placeholder="Panama Canal &amp; Casco Viejo Tour">
+    <label>Description</label><textarea id="tourDesc" placeholder="Highlights, duration, what's included..."></textarea>
+    <button class="gold" onclick="saveTour()">Save Tour</button>
+    <button class="secondary" onclick="clearTour()">Clear</button>
+  </div>
+  <div class="panel"><h3>Your Tours</h3><div id="tourList"></div></div>
+</section>
+
+<section id="quotes" class="screen">
+  <div class="panel">
+    <h2>Create / Edit Quote</h2>
+    <input type="hidden" id="quoteId">
+    <div class="row">
+      <div><label>Client Name</label><input id="qClientName" placeholder="Jonathan &amp; Sarah Levy"></div>
+      <div><label>Client Email (optional)</label><input id="qClientEmail" placeholder="client@email.com"></div>
+    </div>
+    <label>Stage</label>
+    <select id="qStage"><option>Initiated</option><option>Thinking</option><option>Completed</option></select>
+
+    <h3 style="margin-top:18px">Tours in this Quote</h3>
+    <div id="lineItems"></div>
+    <button class="secondary" onclick="addLineItem()">+ Add Tour to Quote</button>
+
+    <div class="totals"><span>Quote Total</span><b id="qTotal">$0.00</b></div>
+
+    <button class="gold" onclick="saveQuote()">Save Quote</button>
+    <button class="secondary" onclick="clearQuoteForm()">New / Clear</button>
+  </div>
+
+  <div class="panel">
+    <h3>Pipeline</h3>
+    <div class="kanban">
+      <div class="kb-col stage-init"><h4>Initiated <span id="cInitiated">0</span></h4><div id="colInitiated"></div></div>
+      <div class="kb-col stage-think"><h4>Thinking <span id="cThinking">0</span></h4><div id="colThinking"></div></div>
+      <div class="kb-col stage-done"><h4>Completed <span id="cCompleted">0</span></h4><div id="colCompleted"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="restaurants" class="screen">
+  <div class="panel">
+    <h2>Restaurant List</h2>
+    <p class="muted">Shown to clients on their quote page. Clients book directly on the restaurant's own website — reservations don't route through you.</p>
+    <input type="hidden" id="restId">
+    <div class="row">
+      <div><label>Restaurant Name</label><input id="restName" placeholder="Eden Kosher Grill"></div>
+      <div><label>Website / Reservation URL</label><input id="restUrl" placeholder="https://..."></div>
+    </div>
+    <label>Notes (cuisine, area, kosher certification, etc.)</label><textarea id="restNotes"></textarea>
+    <button class="gold" onclick="saveRestaurant()">Save Restaurant</button>
+    <button class="secondary" onclick="clearRestaurant()">Clear</button>
+  </div>
+  <div class="panel"><h3>Restaurant List</h3><div id="restList"></div></div>
+</section>
+
+<section id="settings" class="screen">
+  <div class="panel">
+    <h2>Client Payment Info</h2>
+    <p class="muted">This text is shown to clients on their quote page exactly as written. Include your Iuniverso payment details and your wire transfer instructions.</p>
+    <label>Iuniverso (Credit Card) Payment Instructions</label>
+    <textarea id="setIuniverso" placeholder="Pay by credit card via Iuniverso: search 'Premium Kosher Tours' in the app, or send payment to [your Iuniverso ID/link]."></textarea>
+    <label>Wire Transfer Instructions</label>
+    <textarea id="setWire" placeholder="Bank name, account holder, account number, SWIFT/IBAN, routing number, reference to use..."></textarea>
+    <button class="gold" onclick="saveSettings()">Save Payment Info</button>
+  </div>
+  <div class="panel">
+    <h2>Client App Link</h2>
+    <p class="muted">The web address where your Client app (the /client folder) is hosted. Used to build the "Copy Client Link" URL for each quote. Set this once after you deploy the app (e.g. GitHub Pages URL).</p>
+    <label>Client App Base URL</label>
+    <input id="setBaseUrl" placeholder="https://yourdomain.github.io/PKT-new-def-/client/index.html">
+    <button class="gold" onclick="saveSettings()">Save Base URL</button>
+  </div>
+</section>
+
+</main>
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+const DB={tours:'pkt2_tours',quotes:'pkt2_quotes',restaurants:'pkt2_restaurants',settings:'pkt2_settings'};
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
+function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+let tours=load(DB.tours,[]),quotes=load(DB.quotes,[]),restaurants=load(DB.restaurants,[]),settings=load(DB.settings,{iuniverso:'',wire:'',baseUrl:''});
+
+document.querySelectorAll('nav .tab').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('nav .tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById(b.dataset.screen).classList.add('active');
+  if(b.dataset.screen==='dashboard')renderDashboard();
+}));
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window._tt);window._tt=setTimeout(()=>t.style.display='none',2200)}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function esc(s){return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function money(n){return '$'+(Number(n)||0).toFixed(2)}
+
+/* ---------- Tours ---------- */
+function renderTours(){
+  const list=document.getElementById('tourList');
+  if(!tours.length){list.innerHTML='<p class="muted">No tours yet.</p>';return}
+  list.innerHTML=tours.map(t=>`<div class="item-card"><b>${esc(t.name)}</b><small>${esc(t.desc||'')}</small><div class="actions"><button class="small" onclick="editTour('${t.id}')">Edit</button><button class="small danger" onclick="deleteTour('${t.id}')">Delete</button></div></div>`).join('');
+}
+function saveTour(){
+  const id=document.getElementById('tourId').value;
+  const name=document.getElementById('tourName').value.trim();
+  if(!name){toast('Tour name is required');return}
+  const desc=document.getElementById('tourDesc').value.trim();
+  if(id){const t=tours.find(x=>x.id===id);t.name=name;t.desc=desc}
+  else tours.push({id:uid(),name,desc});
+  save(DB.tours,tours);clearTour();renderTours();renderLineItemTourOptions();toast('Tour saved');
+}
+function editTour(id){const t=tours.find(x=>x.id===id);if(!t)return;document.getElementById('tourId').value=t.id;document.getElementById('tourName').value=t.name;document.getElementById('tourDesc').value=t.desc||''}
+function clearTour(){document.getElementById('tourId').value='';document.getElementById('tourName').value='';document.getElementById('tourDesc').value=''}
+function deleteTour(id){if(!confirm('Delete this tour template?'))return;tours=tours.filter(x=>x.id!==id);save(DB.tours,tours);renderTours();renderLineItemTourOptions()}
+
+/* ---------- Quotes ---------- */
+let currentLineItems=[];
+function renderLineItemTourOptions(){
+  document.querySelectorAll('.li-tour-select').forEach(sel=>{
+    const cur=sel.value;
+    sel.innerHTML='<option value="">Select tour...</option>'+tours.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');
+    if(cur)sel.value=cur;
+  });
+}
+function addLineItem(item){
+  item=item||{id:uid(),tourId:'',date:'',price:'',notes:''};
+  currentLineItems.push(item);
+  renderLineItems();
+}
+function removeLineItem(id){currentLineItems=currentLineItems.filter(x=>x.id!==id);renderLineItems()}
+function renderLineItems(){
+  const wrap=document.getElementById('lineItems');
+  wrap.innerHTML=currentLineItems.map(li=>`
+    <div class="line-item-grid" data-id="${li.id}">
+      <div><label>Tour</label><select class="li-tour-select" onchange="updateLineItem('${li.id}','tourId',this.value)"></select></div>
+      <div><label>Date</label><input type="date" value="${esc(li.date)}" onchange="updateLineItem('${li.id}','date',this.value)"></div>
+      <div><label>Price (USD)</label><input type="number" min="0" step="0.01" value="${esc(li.price)}" oninput="updateLineItem('${li.id}','price',this.value)"></div>
+      <div><label>Notes</label><input value="${esc(li.notes)}" oninput="updateLineItem('${li.id}','notes',this.value)"></div>
+      <button class="danger small" onclick="removeLineItem('${li.id}')">Remove</button>
+    </div>`).join('') || '<p class="muted">No tours added yet.</p>';
+  renderLineItemTourOptions();
+  currentLineItems.forEach(li=>{const sel=wrap.querySelector(`[data-id="${li.id}"] .li-tour-select`);if(sel)sel.value=li.tourId});
+  updateTotal();
+}
+function updateLineItem(id,field,val){const li=currentLineItems.find(x=>x.id===id);if(!li)return;li[field]=val;if(field==='price')updateTotal()}
+function updateTotal(){const t=currentLineItems.reduce((s,li)=>s+(Number(li.price)||0),0);document.getElementById('qTotal').textContent=money(t);return t}
+
+function saveQuote(){
+  const id=document.getElementById('quoteId').value||uid();
+  const clientName=document.getElementById('qClientName').value.trim();
+  if(!clientName){toast('Client name is required');return}
+  if(!currentLineItems.length){toast('Add at least one tour');return}
+  const badItem=currentLineItems.find(li=>!li.tourId||!li.price);
+  if(badItem){toast('Every tour needs a tour selected and a price');return}
+  const items=currentLineItems.map(li=>{
+    const t=tours.find(x=>x.id===li.tourId);
+    return {tourName:t?t.name:'Tour',tourDesc:t?t.desc:'',date:li.date,price:Number(li.price)||0,notes:li.notes};
+  });
+  const total=items.reduce((s,i)=>s+i.price,0);
+  const q={
+    id,
+    clientName,
+    clientEmail:document.getElementById('qClientEmail').value.trim(),
+    stage:document.getElementById('qStage').value,
+    items,total,
+    createdDate:(quotes.find(x=>x.id===id)||{}).createdDate||new Date().toISOString(),
+    updatedDate:new Date().toISOString()
+  };
+  const idx=quotes.findIndex(x=>x.id===id);
+  if(idx>-1)quotes[idx]=q;else quotes.push(q);
+  save(DB.quotes,quotes);
+  clearQuoteForm();
+  renderQuotesPipeline();
+  renderDashboard();
+  toast('Quote saved');
+}
+function clearQuoteForm(){
+  document.getElementById('quoteId').value='';
+  document.getElementById('qClientName').value='';
+  document.getElementById('qClientEmail').value='';
+  document.getElementById('qStage').value='Initiated';
+  currentLineItems=[];
+  renderLineItems();
+}
+function editQuote(id){
+  const q=quotes.find(x=>x.id===id);if(!q)return;
+  document.getElementById('quoteId').value=q.id;
+  document.getElementById('qClientName').value=q.clientName;
+  document.getElementById('qClientEmail').value=q.clientEmail||'';
+  document.getElementById('qStage').value=q.stage;
+  currentLineItems=q.items.map(i=>{
+    const t=tours.find(x=>x.name===i.tourName);
+    return {id:uid(),tourId:t?t.id:'',date:i.date,price:i.price,notes:i.notes};
+  });
+  renderLineItems();
+  document.querySelectorAll('nav .tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.querySelector('[data-screen="quotes"]').classList.add('active');
+  document.getElementById('quotes').classList.add('active');
+  window.scrollTo(0,0);
+}
+function setStage(id,stage){const q=quotes.find(x=>x.id===id);if(!q)return;q.stage=stage;q.updatedDate=new Date().toISOString();save(DB.quotes,quotes);renderQuotesPipeline();renderDashboard()}
+function deleteQuote(id){if(!confirm('Delete this quote?'))return;quotes=quotes.filter(x=>x.id!==id);save(DB.quotes,quotes);renderQuotesPipeline();renderDashboard()}
+
+function b64EncodeUnicode(str){return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,(m,p)=>String.fromCharCode('0x'+p)))}
+function buildClientLink(q){
+  const payload={
+    clientName:q.clientName,
+    items:q.items,
+    total:q.total,
+    payment:{iuniverso:settings.iuniverso||'',wire:settings.wire||''},
+    restaurants:restaurants.map(r=>({name:r.name,url:r.url,notes:r.notes}))
+  };
+  const encoded=b64EncodeUnicode(JSON.stringify(payload));
+  const base=settings.baseUrl||'client/index.html';
+  return base+'#'+encoded;
+}
+function copyClientLink(id){
+  const q=quotes.find(x=>x.id===id);if(!q)return;
+  const link=buildClientLink(q);
+  navigator.clipboard&&navigator.clipboard.writeText(link).then(()=>toast('Client link copied')).catch(()=>fallbackCopy(link));
+  if(!navigator.clipboard)fallbackCopy(link);
+}
+function fallbackCopy(link){prompt('Copy this link:',link)}
+
+function quoteCard(q){
+  return `<div class="kb-card">
+    <b>${esc(q.clientName)}</b>
+    <small>${q.items.length} tour${q.items.length===1?'':'s'} · ${money(q.total)}</small>
+    <div class="actions">
+      <button class="small" onclick="editQuote('${q.id}')">Edit</button>
+      <button class="small" onclick="copyClientLink('${q.id}')">Copy Client Link</button>
+      <button class="small danger" onclick="deleteQuote('${q.id}')">Delete</button>
+    </div>
+    <div class="actions">
+      ${q.stage!=='Initiated'?`<button class="small" onclick="setStage('${q.id}','Initiated')">← Initiated</button>`:''}
+      ${q.stage!=='Thinking'?`<button class="small" onclick="setStage('${q.id}','Thinking')">${q.stage==='Completed'?'←':'→'} Thinking</button>`:''}
+      ${q.stage!=='Completed'?`<button class="small" onclick="setStage('${q.id}','Completed')">Completed →</button>`:''}
+    </div>
+  </div>`;
+}
+function renderQuotesPipeline(){
+  const groups={Initiated:[],Thinking:[],Completed:[]};
+  quotes.forEach(q=>{(groups[q.stage]||groups.Initiated).push(q)});
+  document.getElementById('colInitiated').innerHTML=groups.Initiated.map(quoteCard).join('')||'<p class="muted">Empty</p>';
+  document.getElementById('colThinking').innerHTML=groups.Thinking.map(quoteCard).join('')||'<p class="muted">Empty</p>';
+  document.getElementById('colCompleted').innerHTML=groups.Completed.map(quoteCard).join('')||'<p class="muted">Empty</p>';
+  document.getElementById('cInitiated').textContent=groups.Initiated.length;
+  document.getElementById('cThinking').textContent=groups.Thinking.length;
+  document.getElementById('cCompleted').textContent=groups.Completed.length;
+}
+
+/* ---------- Restaurants ---------- */
+function renderRestaurants(){
+  const list=document.getElementById('restList');
+  if(!restaurants.length){list.innerHTML='<p class="muted">No restaurants yet.</p>';return}
+  list.innerHTML=restaurants.map(r=>`<div class="item-card"><b>${esc(r.name)}</b><small>${esc(r.url)}</small><small>${esc(r.notes||'')}</small><div class="actions"><button class="small" onclick="editRestaurant('${r.id}')">Edit</button><button class="small danger" onclick="deleteRestaurant('${r.id}')">Delete</button></div></div>`).join('');
+}
+function saveRestaurant(){
+  const id=document.getElementById('restId').value;
+  const name=document.getElementById('restName').value.trim();
+  const url=document.getElementById('restUrl').value.trim();
+  if(!name||!url){toast('Name and website URL are required');return}
+  const notes=document.getElementById('restNotes').value.trim();
+  if(id){const r=restaurants.find(x=>x.id===id);r.name=name;r.url=url;r.notes=notes}
+  else restaurants.push({id:uid(),name,url,notes});
+  save(DB.restaurants,restaurants);clearRestaurant();renderRestaurants();toast('Restaurant saved');
+}
+function editRestaurant(id){const r=restaurants.find(x=>x.id===id);if(!r)return;document.getElementById('restId').value=r.id;document.getElementById('restName').value=r.name;document.getElementById('restUrl').value=r.url;document.getElementById('restNotes').value=r.notes||''}
+function clearRestaurant(){document.getElementById('restId').value='';document.getElementById('restName').value='';document.getElementById('restUrl').value='';document.getElementById('restNotes').value=''}
+function deleteRestaurant(id){if(!confirm('Delete this restaurant?'))return;restaurants=restaurants.filter(x=>x.id!==id);save(DB.restaurants,restaurants);renderRestaurants()}
+
+/* ---------- Settings ---------- */
+function loadSettingsForm(){document.getElementById('setIuniverso').value=settings.iuniverso||'';document.getElementById('setWire').value=settings.wire||'';document.getElementById('setBaseUrl').value=settings.baseUrl||''}
+function saveSettings(){
+  settings={iuniverso:document.getElementById('setIuniverso').value,wire:document.getElementById('setWire').value,baseUrl:document.getElementById('setBaseUrl').value.trim()};
+  save(DB.settings,settings);toast('Settings saved');
+}
+
+/* ---------- Dashboard ---------- */
+function renderDashboard(){
+  const counts={Initiated:0,Thinking:0,Completed:0};
+  quotes.forEach(q=>counts[q.stage]=(counts[q.stage]||0)+1);
+  document.getElementById('kInitiated').textContent=counts.Initiated;
+  document.getElementById('kThinking').textContent=counts.Thinking;
+  document.getElementById('kCompleted').textContent=counts.Completed;
+  const recent=[...quotes].sort((a,b)=>new Date(b.updatedDate)-new Date(a.updatedDate)).slice(0,6);
+  document.getElementById('recentQuotes').innerHTML=recent.map(q=>`<div class="item-card"><b>${esc(q.clientName)}</b><small>${q.stage} · ${money(q.total)} · ${q.items.length} tour(s)</small></div>`).join('')||'<p class="muted">No quotes yet.</p>';
+}
+
+/* init */
+renderTours();renderLineItemTourOptions();renderQuotesPipeline();renderRestaurants();loadSettingsForm();renderDashboard();
+addLineItem();
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('service-worker.js').catch(()=>{})}
+</script>
+</body>
+</html>

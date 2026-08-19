@@ -1,0 +1,13 @@
+{
+  "name": "Premium Kosher Tours — Owner",
+  "short_name": "PKT Owner",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B1730",
+  "theme_color": "#0B1730",
+  "description": "Owner dashboard for creating quotes, tracking their pipeline stage, and managing tours, restaurants and payment info for Premium Kosher Tours.",
+  "icons": [
+    { "src": "logo.jpg", "sizes": "192x192", "type": "image/jpeg" },
+    { "src": "logo.jpg", "sizes": "512x512", "type": "image/jpeg" }
+  ]
+}
