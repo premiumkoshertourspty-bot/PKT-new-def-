@@ -189,6 +189,12 @@ button{font-family:inherit;cursor:pointer}.gold{background:linear-gradient(135de
     <button class="gold" onclick="exportBackup()">Export Backup File</button>
     <label>Restore Backup</label><input type="file" accept=".json" onchange="importBackup(event)">
   </div>
+  <div class="panel"><h2>Google Sheet link</h2><p class="muted">Lets the <b>→ Sheet</b> button on each quote send it to the "Client Quotes" Google Sheet. Paste the Web app URL and the private key from the sheet's Apps Script (see google-sheet-link/SETUP.md). Needs internet; the rest of the app still works offline.</p>
+    <label>Web app URL</label><input id="sheetUrl" placeholder="https://script.google.com/macros/s/.../exec">
+    <label>Private key</label><input id="sheetKey" type="password" placeholder="Same key as SECRET_KEY in the script">
+    <button class="gold" onclick="saveSheetLink()">Save</button>
+    <button class="secondary" onclick="testSheetLink()">Test connection</button>
+  </div>
 </section>
 <!-- Invoice Modal -->
 <div class="modal-overlay" id="invoiceModal">
@@ -386,7 +392,7 @@ function saveClient(){const id=clientId.value;const c={id:id?Number(id):idFor(db
 function editClient(id){const c=db.clients.find(x=>x.id===id);clientId.value=c.id;firstName.value=c.first;lastName.value=c.last;phone.value=c.phone;email.value=c.email;clientNotes.value=c.notes||'';show('clients')}
 function deleteClient(id){if(confirm('Delete client?')){db.clients=db.clients.filter(c=>c.id!==id);saveDB()}}
 function clearClient(){clientId.value='';firstName.value='';lastName.value='';phone.value='';email.value='';clientNotes.value=''}
-function renderQuotes(){quoteList.innerHTML=db.quotes.map(q=>{const hasInv=db.invoices.find(i=>String(i.quoteId)===String(q.id));return`<div class="item-card"><div><b>${esc(q.name)}</b><small>${esc(clientName(q.clientId))} · ${esc(q.arrival)} · ${esc(q.hotel)} · ${money(calc(q).total)} · <span style="color:${hasInv?'#166534':'var(--muted)'}">${hasInv?'Invoiced ✓':'No invoice'}</span></small></div><div class="actions"><button onclick="editQuote(${q.id})">Edit</button><button onclick="openBuilder(${q.id})">Build</button><button onclick="quickPrint(${q.id})">PDF</button><button style="background:#EEF9F0;border:1px solid #86EFAC;color:#166534;font-weight:700;border-radius:9px;padding:8px 10px" onclick="openInvoiceModal(${q.id})">→ Invoice</button><button class="danger" onclick="deleteQuote(${q.id})">Delete</button></div></div>`}).join('')||'<p class="muted">No quotes yet.</p>'}
+function renderQuotes(){quoteList.innerHTML=db.quotes.map(q=>{const hasInv=db.invoices.find(i=>String(i.quoteId)===String(q.id));return`<div class="item-card"><div><b>${esc(q.name)}</b><small>${esc(clientName(q.clientId))} · ${esc(q.arrival)} · ${esc(q.hotel)} · ${money(calc(q).total)} · <span style="color:${hasInv?'#166534':'var(--muted)'}">${hasInv?'Invoiced ✓':'No invoice'}</span></small></div><div class="actions"><button onclick="editQuote(${q.id})">Edit</button><button onclick="openBuilder(${q.id})">Build</button><button onclick="quickPrint(${q.id})">PDF</button><button style="background:#EEF9F0;border:1px solid #86EFAC;color:#166534;font-weight:700;border-radius:9px;padding:8px 10px" onclick="openInvoiceModal(${q.id})">→ Invoice</button><button style="background:#EFF6FF;border:1px solid #93C5FD;color:#1E40AF;font-weight:700;border-radius:9px;padding:8px 10px" onclick="sendToSheet(${q.id})">→ Sheet</button><button class="danger" onclick="deleteQuote(${q.id})">Delete</button></div></div>`}).join('')||'<p class="muted">No quotes yet.</p>'}
 function saveQuote(){const id=quoteId.value;const old=id?db.quotes.find(x=>String(x.id)===String(id)):null;const q={id:id?Number(id):idFor(db.quotes),clientId:quoteClient.value,name:quoteName.value,arrival:arrivalDate.value,departure:departureDate.value,hotel:hotel.value,pax:Number(pax.value||1),status:status.value,invoiceNo:invoiceNo.value,subtitle:subtitle.value,notes:quoteNotes.value,days:old?old.days:[]};if(id)db.quotes[db.quotes.findIndex(x=>String(x.id)===String(id))]=q;else db.quotes.push(q);clearQuote();saveDB();toast('Quote saved')}
 function editQuote(id){const q=db.quotes.find(x=>x.id===id);quoteId.value=q.id;quoteClient.value=q.clientId;quoteName.value=q.name;arrivalDate.value=q.arrival;departureDate.value=q.departure;hotel.value=q.hotel;pax.value=q.pax;status.value=q.status;invoiceNo.value=q.invoiceNo||'';subtitle.value=q.subtitle||'PANAMA CITY & SURROUNDINGS';quoteNotes.value=q.notes||'';show('quotes')}
 function deleteQuote(id){if(confirm('Delete quote?')){db.quotes=db.quotes.filter(q=>q.id!==id);saveDB()}}
@@ -943,8 +949,72 @@ function confirmAndPrintInvoice(){
 invoiceModal.addEventListener('click',e=>{if(e.target===invoiceModal)closeInvoiceModal()});
 function exportBackup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='PKT_CRM_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
 function importBackup(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);db.clients=d.clients||[];db.quotes=d.quotes||[];db.invoices=d.invoices||[];db.expenses=d.expenses||[];saveDB();toast('Backup restored')}catch(err){alert('Could not restore backup')}};r.readAsText(f)}
+// ── GOOGLE SHEET LINK ─────────────────────────────────────────────────────
+// Sends a quote to the "Client Quotes" Google Sheet through its Apps Script web app.
+// Settings live in their own storage key, separate from the CRM data and backups.
+const SHEET_LINK_KEY='pkt_sheet_link';
+function getSheetLink(){try{const v=JSON.parse(localStorage.getItem(SHEET_LINK_KEY)||'{}');return{url:v.url||'',key:v.key||''}}catch(e){return{url:'',key:''}}}
+function loadSheetLinkForm(){const l=getSheetLink();if(window.sheetUrl)sheetUrl.value=l.url;if(window.sheetKey)sheetKey.value=l.key}
+function saveSheetLink(){const url=sheetUrl.value.trim(),key=sheetKey.value.trim();if(url&&!/^https:\/\/script\.google(usercontent)?\.com\//.test(url))return alert('The Web app URL should start with https://script.google.com/');localStorage.setItem(SHEET_LINK_KEY,JSON.stringify({url,key}));toast('Google Sheet link saved')}
+async function testSheetLink(){
+  const url=sheetUrl.value.trim(),key=sheetKey.value.trim();
+  if(!url||!key)return alert('Paste the Web app URL and the private key first.');
+  if(!navigator.onLine)return alert('You are offline. Connect to the internet and try again.');
+  try{const r=await fetch(url+(url.includes('?')?'&':'?')+'key='+encodeURIComponent(key));const d=await r.json();alert(d.ok?'✓ '+d.message:'Not connected: '+d.error)}
+  catch(e){alert('Could not reach the sheet script. Check the URL, and that the script is deployed with access set to "Anyone".')}
+}
+const SHEET_MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],SHEET_WEEKDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+// Day label in the sheet's style, e.g. "Jan 20 (Wed)". Uses the day's Date Label when it names a
+// month and day; otherwise counts from the arrival date (Day 1 = arrival).
+function sheetDayLabel(q,d,di){
+  const base=/^\d{4}-\d{2}-\d{2}$/.test(q.arrival||'')?new Date(q.arrival+'T12:00:00'):null;
+  let dt=null;
+  const m=String(d.date||'').match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})\b/i);
+  if(m){
+    const y=base?base.getFullYear():new Date().getFullYear();
+    dt=new Date(y,SHEET_MONTHS.findIndex(x=>x.toLowerCase()===m[1].toLowerCase()),Number(m[2]),12);
+    if(base&&dt<base-180*864e5)dt.setFullYear(y+1); // trip crosses New Year
+  }else if(base){dt=new Date(base);dt.setDate(dt.getDate()+di)}
+  if(!dt||isNaN(dt))return d.date||`Day ${di+1}`;
+  return `${SHEET_MONTHS[dt.getMonth()]} ${dt.getDate()} (${SHEET_WEEKDAYS[dt.getDay()]})`;
+}
+function sheetTitleCase(s){return String(s||'').toLowerCase().replace(/(^|[\s\-\/(])([a-záéíóúñ])/g,(x,a,b)=>a+b.toUpperCase())}
+function sheetPayload(q){
+  const c=calc(q),days=q.days||[];
+  const subtitle=sheetTitleCase(q.subtitle||'Panama City & Surroundings');
+  return{
+    quoteId:(q.name||'').trim()||`${clientName(q.clientId)} ${q.arrival||''}`.trim(),
+    crmId:q.id,
+    client:clientName(q.clientId),
+    trip:days.length?`${days.length} Days · ${subtitle}`:subtitle,
+    arrival:q.arrival||'',departure:q.departure||'',pax:Number(q.pax||1),
+    total:Math.round(c.total*100)/100,
+    days:days.map((d,di)=>{
+      const rows=c.rows.filter(r=>r.day===di+1);
+      return{date:sheetDayLabel(q,d,di),activity:(d.title||'').trim()||rows.map(r=>r.name).join(' + ')||'Free day',subtotal:Math.round(rows.reduce((s,r)=>s+r.total,0)*100)/100};
+    })
+  };
+}
+async function sendToSheet(id){
+  const q=db.quotes.find(x=>x.id===id);if(!q)return;
+  const link=getSheetLink();
+  if(!link.url||!link.key){if(confirm('The Google Sheet link is not set up yet. Open the settings now?')){show('backup')}return}
+  if(!navigator.onLine)return alert('You are offline. Connect to the internet to send this quote to the sheet.');
+  const p=sheetPayload(q);
+  if(!p.days.length&&!confirm('This quote has no days yet, so only the client row will be sent. Continue?'))return;
+  if(!confirm(`Send "${p.quoteId}" to the Google Sheet?\n\n${p.client} · ${p.days.length} day(s) · ${money(p.total)}\n\nIf this quote is already in the sheet, its tour rows will be replaced. Status, deposit, notes and flight info stay as they are.`))return;
+  toast('Sending to Google Sheet…');
+  try{
+    // text/plain avoids a CORS preflight, which Apps Script web apps don't answer.
+    const r=await fetch(link.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({key:link.key,quote:p})});
+    const d=await r.json();
+    if(!d.ok)return alert('The sheet did not accept the quote:\n\n'+d.error);
+    alert(`✓ ${d.action==='added'?'Added to':'Updated in'} the sheet (Clients row ${d.row}, ${d.days} tour row(s)).\n\n`+(d.match?`Totals match: ${money(d.sheetTotal)}.`:`⚠ Totals don't match: CRM ${money(d.crmTotal)}, sheet ${money(d.sheetTotal)}. The row is marked "Check" in the sheet.`));
+  }catch(e){alert('Could not reach the Google Sheet. Check your internet connection and the link in Backup → Google Sheet link.')}
+}
 renderAll();
 newExpenseForm();
+loadSheetLinkForm();
 </script>
 </body>
 </html>
