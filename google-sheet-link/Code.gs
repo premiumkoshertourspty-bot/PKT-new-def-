@@ -18,6 +18,11 @@
 // Choose your own private key and type the same key in the CRM (Backup → Google Sheet link).
 const SECRET_KEY = 'CHANGE-ME';
 
+// Only needed if you created this script at script.google.com (e.g. on an iPad) instead of
+// through the sheet's Extensions menu: paste the sheet's ID here (the long code in the sheet's
+// web address between /d/ and /edit).
+const SHEET_ID = '';
+
 const CLIENTS_TAB = 'Clients';
 const TOURS_TAB = 'Tours';
 const CLIENTS_FIRST_ROW = 6;
@@ -27,7 +32,11 @@ function doGet(e) {
   const key = e && e.parameter ? e.parameter.key : '';
   if (SECRET_KEY === 'CHANGE-ME') return json_({ ok: false, error: 'Set SECRET_KEY in the script first, then deploy a new version.' });
   if (key !== SECRET_KEY) return json_({ ok: false, error: 'Wrong key. Check the key in the CRM matches the script.' });
-  return json_({ ok: true, message: 'Connected to "' + SpreadsheetApp.getActiveSpreadsheet().getName() + '"' });
+  try {
+    return json_({ ok: true, message: 'Connected to "' + book_().getName() + '"' });
+  } catch (err) {
+    return json_({ ok: false, error: String(err && err.message ? err.message : err) });
+  }
 }
 
 function doPost(e) {
@@ -37,7 +46,7 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     if (SECRET_KEY === 'CHANGE-ME') return json_({ ok: false, error: 'Set SECRET_KEY in the script first, then deploy a new version.' });
     if (data.key !== SECRET_KEY) return json_({ ok: false, error: 'Wrong key. Check the key in the CRM matches the script.' });
-    return json_(upsertQuote_(SpreadsheetApp.getActiveSpreadsheet(), data.quote));
+    return json_(upsertQuote_(book_(), data.quote));
   } catch (err) {
     return json_({ ok: false, error: String(err && err.message ? err.message : err) });
   } finally {
@@ -156,6 +165,13 @@ function setTourFormulas_(sh, r) {
 // with no time-zone shift between the script and the sheet.
 function toDate_(s) {
   return String(s || '').trim();
+}
+
+function book_() {
+  if (SHEET_ID) return SpreadsheetApp.openById(SHEET_ID);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) throw new Error('Paste the sheet ID into SHEET_ID in the script, then deploy a new version.');
+  return ss;
 }
 
 function round2_(n) {

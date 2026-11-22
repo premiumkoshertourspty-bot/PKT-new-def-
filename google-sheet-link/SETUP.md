@@ -5,7 +5,20 @@ This adds a **→ Sheet** button to each quote in the CRM. Pressing it sends the
 
 Before you start: in the CRM, go to **Backup → Export Backup File** to keep a copy of your data.
 
-## 1. Add the script to the sheet
+## On an iPad
+
+The Google Sheets app has no Extensions menu, so do steps 1 and 2 in **Safari** instead:
+
+1. In Safari, go to **script.google.com** and sign in with the account that owns the sheet.
+2. Tap **New project**. Delete everything in the editor and paste in all of `Code.gs`.
+3. Change `CHANGE-ME` to your private key, and paste the sheet's ID between the quotes in
+   `const SHEET_ID = '';` (the long code in the sheet's web address between `/d/` and `/edit`).
+4. Tap the **Save** icon (💾), then continue with **2. Deploy it** below.
+
+If the page looks cramped, tap **aA** in the address bar → **Request Desktop Website**.
+The first time you run or deploy, Google asks you to authorize access to your sheets.
+
+## 1. Add the script to the sheet (computer)
 
 1. Open the **Premium Kosher Tours: Client Quotes** Google Sheet.
 2. Click **Extensions → Apps Script**. A new tab opens.
